@@ -29,11 +29,11 @@ exports.addBooking = async (req, res) => {
 
         const isBookingAvailable = await Booking.findOne({ userId, destination })
 
-        if (!isBookingAvailable) {
+        if (existingBooking) {
             return res
                 .status(400)
                 .json({
-                    message: 'Booking of the destination is already present for the user',
+                    message: 'You have already booked this destination.',
                     success: false
                 })
         }

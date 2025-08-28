@@ -19,33 +19,40 @@ export const AuthProvider = ({ children }) => {
   // Fetch user from cookie session
   const fetchUser = async () => {
     try {
-      console.log('AuthContext: fetchUser called');
+      console.log("AuthContext: fetchUser called");
       // Try to get token from localStorage first
-      const token = localStorage.getItem('jwt_token');
-      console.log('AuthContext: Token from localStorage:', token ? 'Present' : 'Missing');
+      const token = localStorage.getItem("jwt_token");
+      console.log(
+        "AuthContext: Token from localStorage:",
+        token ? "Present" : "Missing"
+      );
 
       const res = await fetch(`${config.API_BASE_URL}/auth/me`, {
         method: "GET",
         credentials: "include",
-        headers: token ? {
-          "Authorization": `Bearer ${token}`
-        } : {}
+        headers: token
+          ? {
+              Authorization: `Bearer ${token}`,
+            }
+          : {},
       });
-      console.log('AuthContext: /auth/me response status:', res.status);
+      console.log("AuthContext: /auth/me response status:", res.status);
       const data = await res.json();
-      console.log('AuthContext: /auth/me response data:', data);
+      console.log("AuthContext: /auth/me response data:", data);
       if (res.ok) {
-        console.log('AuthContext: Setting user:', data.user);
+        console.log("AuthContext: Setting user:", data.user);
         setUser(data.user);
       } else {
-        console.log('AuthContext: /auth/me failed, clearing user');
+        console.log("AuthContext: /auth/me failed, clearing user");
         setUser(null);
       }
     } catch (err) {
       console.error("AuthContext: Auth check failed:", err);
       setUser(null);
     } finally {
-      console.log('AuthContext: fetchUser completed, setting isLoading to false');
+      console.log(
+        "AuthContext: fetchUser completed, setting isLoading to false"
+      );
       setIsLoading(false);
     }
   };
@@ -56,11 +63,11 @@ export const AuthProvider = ({ children }) => {
 
   // Debug effect to track user and isAuthenticated changes
   useEffect(() => {
-    console.log('AuthContext: user state changed:', user);
+    console.log("AuthContext: user state changed:", user);
   }, [user]);
 
   useEffect(() => {
-    console.log('AuthContext: isAuthenticated state changed:', !!user);
+    console.log("AuthContext: isAuthenticated state changed:", !!user);
   }, [user]);
 
   // Signup
@@ -103,7 +110,7 @@ export const AuthProvider = ({ children }) => {
 
       // Store JWT token in localStorage
       if (data.token) {
-        localStorage.setItem('jwt_token', data.token);
+        localStorage.setItem("jwt_token", data.token);
       }
 
       setUser(data.user);
@@ -124,7 +131,7 @@ export const AuthProvider = ({ children }) => {
         credentials: "include",
       });
       // Remove JWT token from localStorage
-      localStorage.removeItem('jwt_token');
+      localStorage.removeItem("jwt_token");
       setUser(null);
       toast.success("Logged out 👋");
     } catch {
@@ -135,12 +142,15 @@ export const AuthProvider = ({ children }) => {
   // Email verification functions
   const sendVerificationEmail = async (email) => {
     try {
-      const res = await fetch(`${config.API_BASE_URL}/email/send-verification`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email }),
-      });
+      const res = await fetch(
+        `${config.API_BASE_URL}/email/send-verification`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error || data.message };
@@ -192,13 +202,44 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const checkVerificationStatus = async (email) => {
+  // Add this new function inside your AuthProvider
+  const googleLogin = async (token) => {
+    setIsLoading(true);
     try {
-      const res = await fetch(`${config.API_BASE_URL}/email/status?email=${encodeURIComponent(email)}`, {
-        method: "GET",
+      const res = await fetch(`${config.API_BASE_URL}/auth/google`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
+        body: JSON.stringify({ token }),
       });
+
+      const data = await res.json();
+      if (!res.ok)
+        return { success: false, error: data.error || "Google login failed" };
+
+      setUser(data.user);
+      toast.success("Logged in with Google successfully!");
+      return { success: true };
+    } catch (err) {
+      console.error("Google login context error:", err);
+      return { success: false, error: "Failed to login with Google" };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const checkVerificationStatus = async (email) => {
+    try {
+      const res = await fetch(
+        `${config.API_BASE_URL}/email/status?email=${encodeURIComponent(
+          email
+        )}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error || data.message };
@@ -210,18 +251,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isAuthenticated: !!user,
-      isLoading,
-      login,
-      signup,
-      logout,
-      sendVerificationEmail,
-      verifyEmailCode,
-      resendVerificationCode,
-      checkVerificationStatus
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        signup,
+        logout,
+        googleLogin,
+        sendVerificationEmail,
+        verifyEmailCode,
+        resendVerificationCode,
+        checkVerificationStatus,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
