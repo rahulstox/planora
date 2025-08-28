@@ -25,7 +25,7 @@ const moodBoardRoutes = require('./routes/moodBoardRoutes');
 const searchRoutes = require('./routes/search');
 const currencyRoutes = require('./routes/currencyRoutes');
 const musicRoutes = require('./routes/musicRoutes');
-
+const hotelRoutes = require('./routes/hotelRoutes'); 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -102,6 +102,9 @@ app.get('/api/health', (req, res) => {
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+
+// Hotel Routes
+app.use('/api/hotels', hotelRoutes); // <-- ADD THIS LINE
 
 // Email Verification Routes
 app.use('/api/email', emailVerificationRoutes);

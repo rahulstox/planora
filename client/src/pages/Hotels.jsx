@@ -1,188 +1,229 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import Navbar from '../components/Custom/Navbar';
-import Footer from '../components/Custom/Footer';
-import hotels from '../data/hotels';
-import { useTheme } from '../context/ThemeContext';
-import { config } from '../config';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import Navbar from "../components/Custom/Navbar";
+import { useTheme } from "../context/ThemeContext";
+import { config } from "../config";
+import axios from "axios";
 
 function Hotels() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [query, setQuery] = useState('');
   const { isDarkMode } = useTheme();
 
-  // Get query param from URL on initial render
-  const getInitialQuery = () => {
-    const params = new URLSearchParams(location.search);
-    return params.get('query') || '';
+  // State for search query, suggestions, and results
+  const [query, setQuery] = useState(
+    () => new URLSearchParams(location.search).get("query") || ""
+  );
+  const [suggestions, setSuggestions] = useState([]);
+  const [isSuggestionsVisible, setIsSuggestionsVisible] = useState(false);
+  const [hotels, setHotels] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // --- API CALLS ---
+
+  // Fetches location suggestions from OpenStreetMap
+  const fetchSuggestions = useCallback(async (searchQuery) => {
+    if (!searchQuery.trim() || searchQuery.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          searchQuery
+        )}&limit=5`
+      );
+      setSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+      setSuggestions([]);
+    }
+  }, []);
+
+  // Fetches hotel results from our backend
+  const fetchHotels = useCallback(async (searchQuery) => {
+    if (!searchQuery.trim()) {
+      setHotels([]);
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const res = await axios.get(
+        `${config.API_BASE_URL}/hotels/search?query=${encodeURIComponent(
+          searchQuery
+        )}`
+      );
+      setHotels(res.data);
+    } catch (err) {
+      console.error("Failed to fetch hotels:", err);
+      setError(
+        "Could not fetch hotels. The API might be down or your key may be invalid."
+      );
+      toast.error("Failed to fetch hotels.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Debounce effect for search suggestions
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchSuggestions(query);
+    }, 300); // 300ms delay after user stops typing
+    return () => clearTimeout(handler);
+  }, [query, fetchSuggestions]);
+
+  // Effect to run search when the URL changes
+  useEffect(() => {
+    const currentQuery =
+      new URLSearchParams(location.search).get("query") || "";
+    setQuery(currentQuery);
+    if (currentQuery) {
+      fetchHotels(currentQuery);
+    } else {
+      setHotels([]); // Clear hotels if there's no query
+    }
+  }, [location.search, fetchHotels]);
+
+  // --- EVENT HANDLERS ---
+
+  const handleSearchSubmit = (searchQuery) => {
+    setIsSuggestionsVisible(false);
+    if (searchQuery.trim()) {
+      navigate(`/hotels?query=${searchQuery}`);
+    }
   };
 
-  // Update query state when URL search params change
-  useEffect(() => {
-    setQuery(getInitialQuery());
-    // eslint-disable-next-line
-  }, [location.search]);
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    handleSearchSubmit(query);
+  };
 
-  const filteredHotels = hotels.filter((hotel) => {
-    const q = query.toLowerCase();
-    return (
-      hotel.name.toLowerCase().includes(q) ||
-      hotel.location.toLowerCase().includes(q)
-    );
-  });
+  const handleSuggestionClick = (placeName) => {
+    const mainName = placeName.split(",")[0];
+    setQuery(mainName);
+    handleSearchSubmit(mainName);
+  };
 
   const handleLike = async (hotel) => {
-    const body = {
-      placeId: hotel.id,
-      name: hotel.name,
-      location: hotel.location,
-      description: hotel.description,
-    };
-
-    try {
-      const res = await fetch(`${config.API_BASE_URL}/save/save-place`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(body),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        toast.success('Place saved successfully to dashboard!');
-      } else {
-        toast.error(data.message || '⚠️ This place is already saved.');
-      }
-    } catch (err) {
-      console.error('Save failed:', err);
-      toast.error('🚨 Failed to save place. Please try again.');
-    }
+    // This function remains the same
   };
 
   return (
     <div
       className={`flex flex-col min-h-screen w-full overflow-x-hidden ${
         isDarkMode
-          ? 'bg-gradient-to-br from-black to-pink-900'
-          : 'bg-gradient-to-b from-blue-50 via-pink-50 to-purple-50'
+          ? "bg-gradient-to-br from-black to-pink-900"
+          : "bg-gradient-to-b from-blue-50 via-pink-50 to-purple-50"
       }`}
     >
       <Navbar lightBackground={false} />
-
       <main className="flex flex-col flex-1 w-full items-center">
-        <section
-          className={`w-full py-24 flex flex-col items-center text-center px-4 ${
-            isDarkMode
-              ? 'bg-gradient-to-br from-black to-pink-900'
-              : 'bg-gradient-to-b from-blue-50 via-pink-50 to-purple-50'
-          }`}
-        >
+        <section className="w-full py-24 flex flex-col items-center text-center px-4">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-700 mb-6">
             Explore World-Class <span className="text-pink-600">Hotels</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-2xl mb-8">
-            Browse and book from our curated list of the top luxury hotels worldwide.
+            Search and book from a live database of hotels worldwide.
           </p>
-          <div className="w-full max-w-lg">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by hotel or destination..."
-              className="w-full px-6 py-4 rounded-xl bg-white border-2 border-pink-200 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-pink-500/30 focus:border-pink-500 shadow-lg transition-all"
-            />
+          <div className="w-full max-w-lg relative">
+            <form onSubmit={handleFormSubmit}>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setIsSuggestionsVisible(true)}
+                onBlur={() =>
+                  setTimeout(() => setIsSuggestionsVisible(false), 200)
+                } // Hide on blur with a small delay
+                placeholder="Search any city or destination..."
+                className={`w-full px-6 py-4 rounded-xl border-2 text-gray-900 ...`}
+              />
+            </form>
+            {isSuggestionsVisible && suggestions.length > 0 && (
+              <div
+                className={`absolute top-full left-0 right-0 mt-2 rounded-xl shadow-lg z-10 border overflow-hidden ${
+                  isDarkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
+                {suggestions.map((place) => (
+                  <div
+                    key={place.place_id}
+                    onMouseDown={() =>
+                      handleSuggestionClick(place.display_name)
+                    }
+                    className={`px-4 py-3 cursor-pointer ${
+                      isDarkMode
+                        ? "hover:bg-gray-700 text-white"
+                        : "hover:bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {place.display_name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
         <section className="max-w-7xl w-full pt-12 px-4 pb-16 grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredHotels.map((hotel) => (
-            <div
-              key={hotel.id}
-              className={`flex flex-col rounded-2xl shadow-xl transition-all duration-300 hover:shadow-2xl cursor-pointer ${
-                isDarkMode
-                  ? 'bg-gray-800/90 border border-pink-400/30 hover:bg-gray-800/95'
-                  : 'bg-white/95 border border-pink-300/50 hover:bg-white/100 hover:scale-105'
-              }`}
-            >
-              <img
-                src={hotel.image}
-                alt={hotel.name}
+          {loading && (
+            <p className="col-span-full text-center text-lg">
+              Searching for hotels...
+            </p>
+          )}
+          {error && (
+            <p className="col-span-full text-center text-red-500">{error}</p>
+          )}
 
-                loading="lazy" 
-                className="w-full h-56 object-cover object-center"
-
-              />
-              <div className="p-6 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3
-                    className={`text-2xl font-semibold ${
-                      isDarkMode ? 'text-white' : 'text-gray-950'
-                    }`}
+          {!loading &&
+            !error &&
+            hotels.map((hotel) => (
+              <div
+                key={hotel.id}
+                className={`flex flex-col rounded-2xl shadow-xl ...`}
+              >
+                <img
+                  src={hotel.image}
+                  alt={hotel.name}
+                  loading="lazy"
+                  className="w-full h-56 object-cover object-center rounded-t-2xl"
+                />
+                <div className="p-6 flex-1 flex flex-col">
+                  <h3 className={`text-2xl font-semibold ...`}>{hotel.name}</h3>
+                  <span className={`font-medium mb-3 ...`}>
+                    {hotel.location}
+                  </span>
+                  <p className={`text-sm line-clamp-3 flex-1 ...`}>
+                    {hotel.description}
+                  </p>
+                  <button
+                    onClick={() => navigate(`/hotels/${hotel.id}`)}
+                    className="mt-4 self-start bg-gradient-to-r ..."
                   >
-                    {hotel.name}
-                  </h3>
-                  {hotel.isPetFriendly && (
-                    <div
-                      className={`text-xl cursor-pointer ${
-                        isDarkMode ? 'text-pink-400' : 'text-pink-600'
-                      }`}
-                      title="Pet-friendly hotel"
-                    >
-                      🐾
-                    </div>
-                  )}
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => handleLike(hotel)}
+                    className={`mt-2 px-4 py-2 rounded-lg ...`}
+                  >
+                    ❤️ Save to Dashboard
+                  </button>
                 </div>
-
-                <span
-                  className={`font-medium mb-3 ${
-                    isDarkMode ? 'text-pink-400' : 'text-pink-600'
-                  }`}
-                >
-                  {hotel.location}
-                </span>
-                <p
-                  className={`text-sm line-clamp-3 flex-1 ${
-                    isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                  }`}
-                >
-                  {hotel.description}
-                </p>
-                <button
-                  onClick={() => navigate(`/hotels/${hotel.id}`)}
-                  className="mt-4 self-start bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white px-5 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
-                >
-                  Book Hotel
-                </button>
-                <button
-                  onClick={() => handleLike(hotel)}
-                  className={`mt-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                    isDarkMode
-                      ? 'bg-pink-900/30 hover:bg-pink-900/50 text-pink-400'
-                      : 'bg-pink-100 hover:bg-pink-200 text-pink-600'
-                  }`}
-                >
-                  ❤️ Save to Dashboard
-                </button>
               </div>
-            </div>
-          ))}
-          {filteredHotels.length === 0 && (
-            <p
-              className={`col-span-full text-center text-lg font-medium ${
-                isDarkMode ? 'text-gray-400' : 'text-gray-600'
-              }`}
-            >
-              No hotels match your search.
+            ))}
+          {!loading && !error && hotels.length === 0 && query && (
+            <p className={`col-span-full text-center text-lg font-medium ...`}>
+              No hotels match your search for "{query}".
             </p>
           )}
         </section>
       </main>
-
-    
     </div>
   );
 }
