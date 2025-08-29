@@ -37,7 +37,7 @@ connectDB();
 const allowedOrigins = [
   "http://localhost:5173", // Vite dev
   "http://localhost:3000", // CRA dev
-  "https://travel-grid.vercel.app" // Production
+  "https://planora-sepia.vercel.app", // <-- THIS LINE IS NOW CORRECT
 ];
 
 // Request logging (skip in test)
