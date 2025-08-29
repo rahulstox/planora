@@ -4,7 +4,7 @@ export const config = {
     API_BASE_URL: 'http://localhost:5000/api',
 
     // App Configuration
-    APP_NAME: 'TravelGrid',
+    APP_NAME: 'planora',
     APP_URL: 'http://localhost:5173',
 
     // Environment

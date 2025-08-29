@@ -9,14 +9,14 @@ const blogs = [
     title: "Top 10 Hidden Gems to Visit in India 🇮🇳",
     summary:
       "Explore the unexplored! From Ziro Valley to Mawlynnong, find the peaceful side of India most tourists miss.",
-    author: "Team TravelGrid",
+    author: "Team planora",
     date: "July 25, 2025",
     tags: ["India", "Hidden Gems", "Travel Tips"],
   },
   {
     title: "How to Plan a Budget-Friendly Trip 💰",
     summary:
-      "Want to travel smart? Here’s how you can plan a fun adventure under ₹10K using TravelGrid tools.",
+      "Want to travel smart? Here’s how you can plan a fun adventure under ₹10K using planora tools.",
     author: "Adarsh Chaubey",
     date: "July 20, 2025",
     tags: ["Budget Travel", "Planning"],
@@ -41,7 +41,7 @@ const blogs = [
     title: "Why You Should Travel More Often 🌍",
     summary:
       "Life’s short, the world is wide. Discover how traveling boosts your mental health, confidence, and creativity.",
-    author: "Team TravelGrid",
+    author: "Team planora",
     date: "June 30, 2025",
     tags: ["Mental Health", "Motivation"],
   },
@@ -76,13 +76,12 @@ function Blog() {
         <div className="text-center max-w-4xl mx-auto">
           <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 animate-fade-in">
-              TravelGrid <span className="text-pink-400">Blog</span>
+              planora <span className="text-pink-400">Blog</span>
             </h1>
             <p className="text-xl sm:text-2xl text-gray-300">
               Tips, stories & insights to make your journey unforgettable.
             </p>
           </div>
-
 
           {/* Search Bar */}
           <div className="mt-6 max-w-xl mx-auto">
@@ -178,7 +177,7 @@ function Blog() {
                   <img
                     src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${blog.author}`}
                     alt="avatar"
-                    loading="lazy" 
+                    loading="lazy"
                     className="w-8 h-8 rounded-full border border-pink-400"
                   />
                   <span className="text-pink-300 text-sm">

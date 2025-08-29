@@ -1,6 +1,7 @@
-# Google Authentication Setup for TravelGrid
+# Google Authentication Setup for planora
 
 ## Prerequisites
+
 - Google Cloud Console account
 - Node.js and npm installed
 - MongoDB database running
@@ -35,11 +36,13 @@
 ## Step 3: Start the Backend Server
 
 1. Navigate to the Server directory:
+
    ```bash
    cd Server
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -52,6 +55,7 @@
 ## Step 4: Start the Frontend
 
 1. Navigate to the client directory:
+
    ```bash
    cd client
    ```
@@ -64,6 +68,7 @@
 ## Features Added
 
 ### Frontend
+
 - ✅ Google authentication buttons in navbar
 - ✅ Google login/signup on Login page
 - ✅ Google login/signup on Signup page
@@ -71,6 +76,7 @@
 - ✅ Custom Google login component
 
 ### Backend
+
 - ✅ Google authentication endpoint (`/api/auth/google`)
 - ✅ Updated User model with Google fields
 - ✅ Google user creation and login logic
@@ -118,4 +124,4 @@ MONGODB_URI=your-mongodb-connection-string
 - **"Invalid Client ID"**: Make sure you've replaced `YOUR_GOOGLE_CLIENT_ID` with your actual Google Client ID
 - **"Origin not allowed"**: Add `http://localhost:5173` to authorized origins in Google Cloud Console
 - **"Database connection error"**: Ensure MongoDB is running and connection string is correct
-- **"JWT_SECRET not set"**: Set the JWT_SECRET environment variable in your backend 
+- **"JWT_SECRET not set"**: Set the JWT_SECRET environment variable in your backend

@@ -11,8 +11,10 @@ const ItineraryMapPage = () => {
   const geocodeLocation = async (place) => {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`,
-        { headers: { "User-Agent": "TravelGrid/1.0" } } // Nominatim requires UA
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          place
+        )}`,
+        { headers: { "User-Agent": "planora/1.0" } } // Nominatim requires UA
       );
       const data = await res.json();
       console.log("Geocode result for", place, data);
@@ -45,9 +47,7 @@ const ItineraryMapPage = () => {
   return (
     <div
       className={
-        isDarkMode
-          ? "min-h-screen p-6 pt-24"
-          : "min-h-screen p-6 pt-24"
+        isDarkMode ? "min-h-screen p-6 pt-24" : "min-h-screen p-6 pt-24"
       }
     >
       <h1
@@ -129,7 +129,8 @@ const ItineraryMapPage = () => {
             isDarkMode
               ? undefined
               : {
-                  background: "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+                  background:
+                    "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
                   color: "#fff",
                 }
           }

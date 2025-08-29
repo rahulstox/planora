@@ -105,7 +105,7 @@
     "featureDescription": "Erleben Sie das Beste im Reisen mit unserer umfassenden Plattform, die für moderne Reisende entwickelt wurde, die unvergessliche Abenteuer suchen.",
     "whatOur": "Was unsere",
     "travelersSay": "Reisende sagen",
-    "testimonialsDescription": "Schließen Sie sich Tausenden zufriedener Reisender an, die mit TravelGrid erstaunliche Ziele entdeckt haben.",
+    "testimonialsDescription": "Schließen Sie sich Tausenden zufriedener Reisender an, die mit planora erstaunliche Ziele entdeckt haben.",
     "features": {
       "greatPrices": {
         "title": "Großartige Preise",
@@ -253,7 +253,7 @@
   },
   "signup": {
     "title": "Konto erstellen",
-    "subtitle": "Treten Sie TravelGrid bei und starten Sie Ihr Abenteuer",
+    "subtitle": "Treten Sie planora bei und starten Sie Ihr Abenteuer",
     "name": "Vollständiger Name",
     "namePlaceholder": "Geben Sie Ihren vollständigen Namen ein",
     "email": "E-Mail-Adresse",

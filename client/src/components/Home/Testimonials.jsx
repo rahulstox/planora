@@ -8,7 +8,7 @@ const testimonials = [
     name: "Amit P.",
     avatar: "https://randomuser.me/api/portraits/men/32.jpg",
     review:
-      "TravelGrid made my trip planning effortless and fun! The curated recommendations were spot-on and saved me hours of research.",
+      "planora made my trip planning effortless and fun! The curated recommendations were spot-on and saved me hours of research.",
     rating: 5,
   },
   {
@@ -40,8 +40,8 @@ const cardVariant = {
   visible: (i) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.2, duration: 0.6 }
-  })
+    transition: { delay: i * 0.2, duration: 0.6 },
+  }),
 };
 
 const scrollStyles = `
@@ -77,9 +77,9 @@ const Testimonials = () => {
               isDarkMode ? "text-white" : "text-gray-900"
             }`}
           >
-            {t('home.whatOur')}{" "}
+            {t("home.whatOur")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-              {t('home.travelersSay')}
+              {t("home.travelersSay")}
             </span>
           </h2>
           <p
@@ -87,7 +87,7 @@ const Testimonials = () => {
               isDarkMode ? "text-gray-300" : "text-gray-600"
             }`}
           >
-            {t('home.testimonialsDescription')}
+            {t("home.testimonialsDescription")}
           </p>
         </div>
 
@@ -105,7 +105,7 @@ const Testimonials = () => {
               <img
                 src={t.avatar}
                 alt={t.name}
-                loading="lazy" 
+                loading="lazy"
                 className="w-16 h-16 rounded-full mb-4 object-cover border-2 border-pink-400 group-hover:border-pink-300 transition-colors duration-300"
               />
               <h3

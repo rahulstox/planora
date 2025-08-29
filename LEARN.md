@@ -1,8 +1,8 @@
 <pre>Note: This repository is created for the contributors of GSSoC'25</pre>
 
-# TravelGrid
+# planora
 
-Welcome to **TravelGrid**, a comprehensive travel platform designed to simplify your travel planning experience! With TravelGrid, you can seamlessly book travel tickets, hire or rent vehicles, reserve hotels, explore travel guides, and choose complete or customizable travel packages—all in one place. Whether you're a solo adventurer or planning a group getaway, TravelGrid has you covered.
+Welcome to **planora**, a comprehensive travel platform designed to simplify your travel planning experience! With planora, you can seamlessly book travel tickets, hire or rent vehicles, reserve hotels, explore travel guides, and choose complete or customizable travel packages—all in one place. Whether you're a solo adventurer or planning a group getaway, planora has you covered.
 
 This project is proudly part of **GirlScript Summer of Code 2025 (GSSoC)**, and we invite passionate contributors to join us in building an intuitive and user-friendly travel solution.
 
@@ -23,7 +23,7 @@ This project is proudly part of **GirlScript Summer of Code 2025 (GSSoC)**, and 
 - Getting Started
   - Prerequisites
   - Installation
-- Contributing to TravelGrid
+- Contributing to planora
   - Contribution Guidelines
   - Task Assignment Process
 - Project Structure
@@ -34,7 +34,7 @@ This project is proudly part of **GirlScript Summer of Code 2025 (GSSoC)**, and 
 
 ## 🌍 About the Project
 
-TravelGrid is your one-stop platform for all travel-related needs. From booking flights, trains, or buses to renting vehicles, reserving hotels, or exploring curated travel guides, TravelGrid offers a seamless and user-friendly experience. Our mission is to make travel planning effortless, affordable, and enjoyable for everyone.
+planora is your one-stop platform for all travel-related needs. From booking flights, trains, or buses to renting vehicles, reserving hotels, or exploring curated travel guides, planora offers a seamless and user-friendly experience. Our mission is to make travel planning effortless, affordable, and enjoyable for everyone.
 
 This project is being developed as part of **GSSoC 2025**, providing contributors with an opportunity to collaborate, learn, and build a real-world application.
 
@@ -69,7 +69,7 @@ This project is being developed as part of **GSSoC 2025**, providing contributor
 
 ## 🚀 Getting Started
 
-Follow these steps to set up the project locally and start contributing to TravelGrid.
+Follow these steps to set up the project locally and start contributing to planora.
 
 ### Prerequisites
 
@@ -82,13 +82,13 @@ Ensure you have the following installed:
 
 ### Installation
 
-1. **Fork the Repository**: Click the "Fork" button at the top-right corner of the [TravelGrid repository](https://github.com/Adarsh-Chaubey03/TravelGrid).
+1. **Fork the Repository**: Click the "Fork" button at the top-right corner of the [planora repository](https://github.com/Adarsh-Chaubey03/planora).
 
 2. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/Adarsh-Chaubey03/TravelGrid.git
-   cd TravelGrid
+   git clone https://github.com/Adarsh-Chaubey03/planora.git
+   cd planora
    ```
 
 3. **Install Dependencies**:
@@ -111,11 +111,11 @@ Ensure you have the following installed:
 
 ---
 
-## 🤝 Contributing to TravelGrid
+## 🤝 Contributing to planora
 
 We welcome **GSSoC 2025** contributors! Follow these guidelines for a smooth collaboration.
 
-- **Issues**: Pick an unassigned issue from the [Issues section](https://github.com/Adarsh-Chaubey03/TravelGrid/issues) or create a new one with a clear description. Wait for admin approval before starting.
+- **Issues**: Pick an unassigned issue from the [Issues section](https://github.com/Adarsh-Chaubey03/planora/issues) or create a new one with a clear description. Wait for admin approval before starting.
 - **Responsive Design**: Ensure all code is responsive across screen sizes using **Tailwind CSS**.
 - **Code Quality**: Write clean, modular code in `src/components/`. Use **ESLint** and **Prettier**.
 - **Styling Consistency**: Use only **one styling method** across the project.  
@@ -126,14 +126,14 @@ We welcome **GSSoC 2025** contributors! Follow these guidelines for a smooth col
 - **Communication**: Avoid unnecessary comments or complaints. For support, contact:
   - **GitHub**: [Adarsh-Chaubey03](https://github.com/Adarsh-Chaubey03)
   - **LinkedIn**: [Adarsh Chaubey](https://www.linkedin.com/in/adarsh-chaubey/)
-- **Support Us**: Star the repo at [TravelGrid](https://github.com/Adarsh-Chaubey03/TravelGrid).
+- **Support Us**: Star the repo at [planora](https://github.com/Adarsh-Chaubey03/planora).
 
 ---
 
 ## 📂 Project Structure
 
 ```plaintext
-TravelGrid/client/
+planora/client/
 ├── public/                # Static assets
 ├── src/
 │   ├── assets/            # Images, fonts, etc.
@@ -152,8 +152,8 @@ TravelGrid/client/
 
 ## 📜 Code of Conduct
 
-All contributors are expected to adhere to the [GirlScript Code of Conduct](https://github.com/Adarsh-Chaubey03/TravelGrid/blob/main/CODE_OF_CONDUCT.md). Be respectful, inclusive, and collaborative in all interactions.
+All contributors are expected to adhere to the [GirlScript Code of Conduct](https://github.com/Adarsh-Chaubey03/planora/blob/main/CODE_OF_CONDUCT.md). Be respectful, inclusive, and collaborative in all interactions.
 
 ---
 
-Happy coding, and let's make **TravelGrid** the ultimate travel companion! 🚗✈️🏨
+Happy coding, and let's make **planora** the ultimate travel companion! 🚗✈️🏨

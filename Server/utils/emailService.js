@@ -30,7 +30,7 @@ const sendEmail = async (to, subject, html, text = null) => {
     console.log('Email server is ready to send messages');
 
     const mailOptions = {
-      from: process.env.EMAIL_FROM || `"TravelGrid" <${process.env.EMAIL_USER}>`,
+      from: process.env.EMAIL_FROM || `"planora" <${process.env.EMAIL_USER}>`,
       to: to,
       subject: subject,
       html: html,
@@ -71,14 +71,14 @@ const sendEmail = async (to, subject, html, text = null) => {
 
 // Send verification email template
 const sendVerificationEmail = async (to, name, verificationCode) => {
-  const subject = 'Verify Your Email - TravelGrid';
+  const subject = 'Verify Your Email - planora';
   const html = `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Email Verification - TravelGrid</title>
+      <title>Email Verification - planora</title>
       <style>
         body { 
           font-family: Arial, sans-serif; 
@@ -175,12 +175,12 @@ const sendVerificationEmail = async (to, name, verificationCode) => {
     <body>
       <div class="container">
         <div class="header">
-          <h1>🌍 TravelGrid</h1>
+          <h1>🌍 planora</h1>
           <h2>Verify Your Email Address</h2>
         </div>
         <div class="content">
           <h3>Hello ${name}!</h3>
-          <p>Welcome to TravelGrid! To complete your registration and start exploring amazing destinations, please verify your email address.</p>
+          <p>Welcome to planora! To complete your registration and start exploring amazing destinations, please verify your email address.</p>
           <p><strong>Your verification code is:</strong></p>
           <div class="code">${verificationCode}</div>
           <div class="warning">
@@ -193,12 +193,12 @@ const sendVerificationEmail = async (to, name, verificationCode) => {
             </a>
           </div>
           <p style="margin-top: 30px; font-size: 14px; color: #666;">
-            If you didn't create an account with TravelGrid, you can safely ignore this email.
+            If you didn't create an account with planora, you can safely ignore this email.
           </p>
         </div>
         <div class="footer">
-          <p><strong>TravelGrid Team</strong></p>
-          <p>© 2025 TravelGrid. All rights reserved.</p>
+          <p><strong>planora Team</strong></p>
+          <p>© 2025 planora. All rights reserved.</p>
           <p>This is an automated email, please do not reply.</p>
         </div>
       </div>

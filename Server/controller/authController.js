@@ -143,7 +143,7 @@ exports.registerUser = async (req, res) => {
 
     // Send verification email
     try {
-      const subject = 'Welcome to TravelGrid - Verify Your Email';
+      const subject = 'Welcome to planora - Verify Your Email';
       const html = `
         <!DOCTYPE html>
         <html>
@@ -161,12 +161,12 @@ exports.registerUser = async (req, res) => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🌍 Welcome to TravelGrid!</h1>
+              <h1>🌍 Welcome to planora!</h1>
               <h2>Verify Your Email Address</h2>
             </div>
             <div class="content">
               <h3>Hello ${name}!</h3>
-              <p>Thank you for joining TravelGrid! To complete your registration and start exploring amazing destinations, please verify your email address.</p>
+              <p>Thank you for joining planora! To complete your registration and start exploring amazing destinations, please verify your email address.</p>
               <p>Your verification code is:</p>
               <div class="code">${verificationCode}</div>
               <p>This code will expire in <strong>5 minutes</strong>.</p>
@@ -176,7 +176,7 @@ exports.registerUser = async (req, res) => {
               </div>
             </div>
             <div class="footer">
-              <p>© 2025 TravelGrid. All rights reserved.</p>
+              <p>© 2025 planora. All rights reserved.</p>
               <p>If you didn't create this account, please ignore this email.</p>
             </div>
           </div>

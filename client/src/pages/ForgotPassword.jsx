@@ -51,7 +51,7 @@ const ForgotPassword = () => {
           <div className="text-center mb-8">
             <Link to="/" className="inline-block mb-6">
               <div className="text-3xl font-bold text-pink-400 tracking-tight">
-                TravelGrid
+                planora
               </div>
             </Link>
             <h1 className="text-3xl font-bold text-white mb-2">

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Wifi,
   WifiOff,
   RefreshCw,
   Home,
   AlertCircle,
-  Mail
-} from 'lucide-react';
+  Mail,
+} from "lucide-react";
 
 const NetworkError = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -18,12 +18,12 @@ const NetworkError = () => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
@@ -32,7 +32,7 @@ const NetworkError = () => {
     let timer;
     if (!isOnline && countdown > 0) {
       timer = setInterval(() => {
-        setCountdown(prev => prev - 1);
+        setCountdown((prev) => prev - 1);
       }, 1000);
     } else if (countdown === 0) {
       window.location.reload();
@@ -78,25 +78,33 @@ const NetworkError = () => {
               <WifiOff className="w-12 h-12 text-pink-500" strokeWidth={1.5} />
             )}
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Network Connection Issue</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Network Connection Issue
+          </h1>
           <p className="text-gray-300">
-            {isOnline ?
-              "We're having trouble connecting to our servers." :
-              "It looks like you're currently offline."}
+            {isOnline
+              ? "We're having trouble connecting to our servers."
+              : "It looks like you're currently offline."}
           </p>
         </div>
 
         <div className="bg-gray-900 bg-opacity-50 rounded-xl p-4 mb-6">
           <div className="flex items-center mb-2">
-            <div className={`w-3 h-3 rounded-full mr-2 ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}></div>
+            <div
+              className={`w-3 h-3 rounded-full mr-2 ${
+                isOnline ? "bg-green-500" : "bg-red-500"
+              }`}
+            ></div>
             <p className="text-sm font-medium text-gray-300">
-              {isOnline ? 'Connected to internet' : 'No internet connection detected'}
+              {isOnline
+                ? "Connected to internet"
+                : "No internet connection detected"}
             </p>
           </div>
           <p className="text-sm text-gray-400">
-            {isOnline ?
-              "We're having trouble connecting to our servers. Please try again in a few moments." :
-              "Check your internet connection and try again."}
+            {isOnline
+              ? "We're having trouble connecting to our servers. Please try again in a few moments."
+              : "Check your internet connection and try again."}
           </p>
         </div>
 
@@ -115,7 +123,8 @@ const NetworkError = () => {
           )}
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button aria-label="Search"
+            <button
+              aria-label="Search"
               onClick={() => window.location.reload()}
               className="px-6 py-3 bg-pink-600 hover:bg-pink-700 rounded-xl font-semibold transition-colors text-white flex items-center justify-center"
             >
@@ -140,7 +149,7 @@ const NetworkError = () => {
         </p>
         <p className="text-pink-400 font-medium mt-1 flex items-center">
           <Mail className="w-4 h-4 mr-1" />
-          support@travelgrid.com
+          support@planora.com
         </p>
       </div>
     </div>

@@ -106,7 +106,7 @@
     "featureDescription": "Experience the best in travel with our comprehensive platform designed for modern travelers seeking unforgettable adventures.",
     "whatOur": "What Our",
     "travelersSay": "Travelers Say",
-    "testimonialsDescription": "Join thousands of satisfied travelers who have discovered amazing destinations with TravelGrid.",
+    "testimonialsDescription": "Join thousands of satisfied travelers who have discovered amazing destinations with planora.",
     "features": {
       "greatPrices": {
         "title": "Great Prices",
@@ -254,7 +254,7 @@
   },
   "signup": {
     "title": "Create Account",
-    "subtitle": "Join TravelGrid and start your adventure",
+    "subtitle": "Join planora and start your adventure",
     "name": "Full Name",
     "namePlaceholder": "Enter your full name",
     "email": "Email Address",

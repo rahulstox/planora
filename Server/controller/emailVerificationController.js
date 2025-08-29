@@ -37,7 +37,7 @@ const sendVerificationEmail = async (req, res) => {
     await user.save();
 
     // Send email
-    const subject = 'Verify Your Email - TravelGrid';
+    const subject = 'Verify Your Email - planora';
     const html = `
       <!DOCTYPE html>
       <html>
@@ -55,22 +55,22 @@ const sendVerificationEmail = async (req, res) => {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🌍 TravelGrid</h1>
+            <h1>🌍 planora</h1>
             <h2>Verify Your Email Address</h2>
           </div>
           <div class="content">
             <h3>Hello ${user.name}!</h3>
-            <p>Welcome to TravelGrid! To complete your registration and start exploring amazing destinations, please verify your email address.</p>
+            <p>Welcome to planora! To complete your registration and start exploring amazing destinations, please verify your email address.</p>
             <p>Your verification code is:</p>
             <div class="code">${verificationCode}</div>
             <p>This code will expire in <strong>5 minutes</strong>.</p>
-            <p>If you didn't create an account with TravelGrid, please ignore this email.</p>
+            <p>If you didn't create an account with planora, please ignore this email.</p>
             <div style="text-align: center;">
               <a href="http://localhost:5173/verify-email?email=${encodeURIComponent(email)}" class="button">Verify Email</a>
             </div>
           </div>
           <div class="footer">
-            <p>© 2025 TravelGrid. All rights reserved.</p>
+            <p>© 2025 planora. All rights reserved.</p>
             <p>This is an automated email, please do not reply.</p>
           </div>
         </div>
@@ -178,7 +178,7 @@ const resendVerificationCode = async (req, res) => {
     await user.save();
 
     // Send email
-    const subject = 'New Verification Code - TravelGrid';
+    const subject = 'New Verification Code - planora';
     const html = `
       <!DOCTYPE html>
       <html>
@@ -195,7 +195,7 @@ const resendVerificationCode = async (req, res) => {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🌍 TravelGrid</h1>
+            <h1>🌍 planora</h1>
             <h2>New Verification Code</h2>
           </div>
           <div class="content">
@@ -205,7 +205,7 @@ const resendVerificationCode = async (req, res) => {
             <p>This code will expire in <strong>5 minutes</strong>.</p>
           </div>
           <div class="footer">
-            <p>© 2025 TravelGrid. All rights reserved.</p>
+            <p>© 2025 planora. All rights reserved.</p>
             <p>This is an automated email, please do not reply.</p>
           </div>
         </div>

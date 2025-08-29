@@ -20,14 +20,14 @@ const BookingModal = ({ hotelId, userId, onClose }) => {
     if (isSubmitting) return; // prevent double click
     setIsSubmitting(true);
     const payload = {
-    ...form,
-    hotelId,
-    user: userId,
-  };
+      ...form,
+      hotelId,
+      user: userId,
+    };
 
-  console.log("Booking payload:", payload);
+    console.log("Booking payload:", payload);
     try {
-      await axios.post("https://travelgrid.onrender.com/api/bookings", {
+      await axios.post("https://planora.onrender.com/api/bookings", {
         ...form,
         hotelId,
         user: userId,

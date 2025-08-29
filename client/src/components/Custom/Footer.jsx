@@ -48,11 +48,13 @@ const Footer = () => {
 
   return (
     <>
-      <footer className={`relative text-white transition-all duration-300 ${
-     isDarkMode 
-          ? 'bg-gradient-to-b from-black via-zinc-800 to-zinc-800' 
-          : 'bg-gradient-to-br from-gray-900  to-pink-900'
-      }`}>
+      <footer
+        className={`relative text-white transition-all duration-300 ${
+          isDarkMode
+            ? "bg-gradient-to-b from-black via-zinc-800 to-zinc-800"
+            : "bg-gradient-to-br from-gray-900  to-pink-900"
+        }`}
+      >
         {/* Background pattern */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,...')] opacity-20" />
 
@@ -61,26 +63,27 @@ const Footer = () => {
           <div className="container mx-auto px-4 pt-16">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 text-left">
               <div className="space-y-6">
-  <div className="flex items-center space-x-3">
-    <img
-      src="/favicon.ico"
-      alt="TravelGrid Logo"
-      loading="lazy" 
-      className="w-10 h-10"
-    />
-    <h3 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-pink-300 bg-clip-text text-transparent">
-      TravelGrid
-    </h3>
-  </div>
-  <p className="text-gray-300 text-sm leading-relaxed">
-    Discover amazing destinations and create unforgettable memories with our curated travel experiences around the world. Your journey starts here.
-  </p>
-  {/* Social Media Links */}
-  <div className="flex space-x-4">
-    {/* Icons like Twitter, Pinterest, YouTube, Contributors */}
-  </div>
-</div>
-
+                <div className="flex items-center space-x-3">
+                  <img
+                    src="/favicon.ico"
+                    alt="planora Logo"
+                    loading="lazy"
+                    className="w-10 h-10"
+                  />
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-pink-300 bg-clip-text text-transparent">
+                    planora
+                  </h3>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  Discover amazing destinations and create unforgettable
+                  memories with our curated travel experiences around the world.
+                  Your journey starts here.
+                </p>
+                {/* Social Media Links */}
+                <div className="flex space-x-4">
+                  {/* Icons like Twitter, Pinterest, YouTube, Contributors */}
+                </div>
+              </div>
 
               {/* Quick Links */}
               <div className="space-y-6">
@@ -194,11 +197,9 @@ const Footer = () => {
                       </svg>
                     </div>
                     <div>
+                      <p className="text-gray-300 text-sm">hello@planora.com</p>
                       <p className="text-gray-300 text-sm">
-                        hello@travelgrid.com
-                      </p>
-                      <p className="text-gray-300 text-sm">
-                        support@travelgrid.com
+                        support@planora.com
                       </p>
                     </div>
                   </div>
@@ -222,9 +223,9 @@ const Footer = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
                       className={`w-full px-4 py-3 border rounded-l focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm transition-all duration-300 ${
-                        isDarkMode 
-                          ? ' text-white placeholder-gray-400 bg-zinc-800 border-slate-600' 
-                          : 'text-black placeholder-gray-700 bg-gray-50 border-gray-600'
+                        isDarkMode
+                          ? " text-white placeholder-gray-400 bg-zinc-800 border-slate-600"
+                          : "text-black placeholder-gray-700 bg-gray-50 border-gray-600"
                       }`}
                       required
                     />
@@ -232,7 +233,8 @@ const Footer = () => {
                       {/* Envelope icon */}
                     </div>
                   </div>
-                  <button aria-label="Search"
+                  <button
+                    aria-label="Search"
                     type="submit"
                     className="w-full bg-gradient-to-r from-pink-500 to-purple-700 hover:from-pink-600 hover:to-pink-700 text-white py-3 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 transition-all duration-300"
                   >
@@ -251,11 +253,14 @@ const Footer = () => {
               <div className="flex flex-col md:flex-row justify-center items-center text-center space-y-4 md:space-y-0">
                 <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
                   <p className="text-gray-400 text-sm">
-                     © {new Date().getFullYear()} TravelGrid. All rights reserved.
+                    © {new Date().getFullYear()} planora. All rights reserved.
                   </p>
                   {/* Links stacked on mobile, inline on desktop */}
                   <div className="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 text-sm items-center">
-                    <Link to="/privacy" className="text-gray-400 hover:text-pink-300 transition-colors">
+                    <Link
+                      to="/privacy"
+                      className="text-gray-400 hover:text-pink-300 transition-colors"
+                    >
                       Privacy Policy
                     </Link>
                     <Link
@@ -288,7 +293,7 @@ const Footer = () => {
                 >
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
-                <span>by TravelGrid Team</span>
+                <span>by planora Team</span>
               </div>
             </div>
           </div>
@@ -299,11 +304,14 @@ const Footer = () => {
       {toast.show && (
         <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-2 duration-300">
           <div
-            className={`max-w-sm w-full rounded-lg shadow-xl border-l-4 p-4 flex items-center space-x-3 transition-all duration-300 ${isDarkMode
-              ? 'bg-slate-800 text-white border-slate-600'
-              : 'bg-white text-gray-900 border-gray-200'
-              } ${toast.type === "success" ? "border-green-500" : "border-red-500"
-              }`}>
+            className={`max-w-sm w-full rounded-lg shadow-xl border-l-4 p-4 flex items-center space-x-3 transition-all duration-300 ${
+              isDarkMode
+                ? "bg-slate-800 text-white border-slate-600"
+                : "bg-white text-gray-900 border-gray-200"
+            } ${
+              toast.type === "success" ? "border-green-500" : "border-red-500"
+            }`}
+          >
             <div className="flex-shrink-0">
               {toast.type === "success" ? (
                 <svg
@@ -325,13 +333,15 @@ const Footer = () => {
             </div>
             <div className="flex-1">
               <p
-                className={`text-sm font-medium ${toast.type === "success" ? "text-green-400" : "text-red-400"
-                  }`}
+                className={`text-sm font-medium ${
+                  toast.type === "success" ? "text-green-400" : "text-red-400"
+                }`}
               >
                 {toast.message}
               </p>
             </div>
-            <button aria-label="Search"
+            <button
+              aria-label="Search"
               onClick={hideToast}
               className="text-gray-400 hover:text-gray-600 transition-colors"
             >

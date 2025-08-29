@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const TravelTips = () => {
   const tips = [
     "Always carry a power bank while exploring remote places.",
-    "Use TravelGrid's guide filter to find locals who speak your language.",
+    "Use planora's guide filter to find locals who speak your language.",
     "Carry a digital copy of your ID and travel insurance.",
     "Ask your guide about lesser-known photo spots!",
     "Check local weather before finalizing your itinerary.",
