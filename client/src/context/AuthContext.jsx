@@ -19,13 +19,8 @@ export const AuthProvider = ({ children }) => {
   // Fetch user from cookie session
   const fetchUser = async () => {
     try {
-      console.log("AuthContext: fetchUser called");
       // Try to get token from localStorage first
       const token = localStorage.getItem("jwt_token");
-      console.log(
-        "AuthContext: Token from localStorage:",
-        token ? "Present" : "Missing"
-      );
 
       const res = await fetch(`${config.API_BASE_URL}/auth/me`, {
         method: "GET",
@@ -36,23 +31,16 @@ export const AuthProvider = ({ children }) => {
             }
           : {},
       });
-      console.log("AuthContext: /auth/me response status:", res.status);
       const data = await res.json();
-      console.log("AuthContext: /auth/me response data:", data);
       if (res.ok) {
-        console.log("AuthContext: Setting user:", data.user);
         setUser(data.user);
       } else {
-        console.log("AuthContext: /auth/me failed, clearing user");
         setUser(null);
       }
     } catch (err) {
-      console.error("AuthContext: Auth check failed:", err);
+      console.error("Auth check failed:", err);
       setUser(null);
     } finally {
-      console.log(
-        "AuthContext: fetchUser completed, setting isLoading to false"
-      );
       setIsLoading(false);
     }
   };
@@ -60,15 +48,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     fetchUser();
   }, []);
-
-  // Debug effect to track user and isAuthenticated changes
-  useEffect(() => {
-    console.log("AuthContext: user state changed:", user);
-  }, [user]);
-
-  useEffect(() => {
-    console.log("AuthContext: isAuthenticated state changed:", !!user);
-  }, [user]);
 
   // Signup
   const signup = async ({ name, email, password }) => {
@@ -84,7 +63,11 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error || data.message };
 
-      setUser(data.user);
+      // Handle ApiResponse structure: data.data.user or data.user
+      const userData = data.data?.user || data.user;
+      if (userData) {
+        setUser(userData);
+      }
       toast.success("Signup successful! 🎉");
       return { success: true };
     } catch (err) {
@@ -206,6 +189,10 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = async (token) => {
     setIsLoading(true);
     try {
+      if (!token) {
+        return { success: false, error: "Google token is missing" };
+      }
+
       const res = await fetch(`${config.API_BASE_URL}/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -214,15 +201,23 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await res.json();
-      if (!res.ok)
+      
+      if (!res.ok) {
+        console.error("Google login error:", data);
         return { success: false, error: data.error || "Google login failed" };
+      }
+
+      // Store JWT token if provided
+      if (data.token) {
+        localStorage.setItem("jwt_token", data.token);
+      }
 
       setUser(data.user);
       toast.success("Logged in with Google successfully!");
       return { success: true };
     } catch (err) {
-      console.error("Google login context error:", err);
-      return { success: false, error: "Failed to login with Google" };
+      console.error("Google login network error:", err);
+      return { success: false, error: "Network error. Please check your connection and try again." };
     } finally {
       setIsLoading(false);
     }

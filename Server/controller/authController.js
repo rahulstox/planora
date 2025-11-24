@@ -1,9 +1,11 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const validator = require('validator');
-const User = require('../models/user');
-const mongoose = require('mongoose');
-const { sendEmail } = require('../utils/emailService');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import validator from 'validator';
+import User from '../models/user.js';
+import { sendEmail } from '../utils/emailService.js';
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 if (!JWT_SECRET) {
@@ -41,17 +43,41 @@ const generateVerificationCode = () => {
 };
 
 // Google Auth
-exports.googleAuth = async (req, res) => {
+export const googleAuth = async (req, res) => {
   const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ success: false, error: "Google token is required" });
+  }
 
   try {
     const response = await fetch(
       `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
     );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Google token validation failed:", response.status, errorData);
+      return res.status(400).json({ 
+        success: false, 
+        error: "Invalid or expired Google token. Please try again." 
+      });
+    }
+
     const googleUser = await response.json();
 
+    // Check if the response contains an error
+    if (googleUser.error) {
+      console.error("Google API error:", googleUser.error);
+      return res.status(400).json({ 
+        success: false, 
+        error: googleUser.error_description || "Google authentication failed" 
+      });
+    }
+
     if (!googleUser.email) {
-      return res.status(400).json({ success: false, error: "Invalid Google token" });
+      console.error("Google user data missing email:", googleUser);
+      return res.status(400).json({ success: false, error: "Invalid Google token - email not found" });
     }
 
     let user = await User.findOne({ email: googleUser.email });
@@ -63,11 +89,17 @@ exports.googleAuth = async (req, res) => {
         picture: googleUser.picture,
         googleId: googleUser.sub,
         isGoogleUser: true,
+        isEmailVerified: true, // Google users are automatically verified
       });
-    } else if (!user.googleId) {
-      user.googleId = googleUser.sub;
-      user.isGoogleUser = true;
-      user.picture = googleUser.picture;
+    } else {
+      // Update existing user with Google info if needed
+      if (!user.googleId) {
+        user.googleId = googleUser.sub;
+        user.isGoogleUser = true;
+      }
+      if (googleUser.picture && !user.picture) {
+        user.picture = googleUser.picture;
+      }
       await user.save();
     }
 
@@ -80,71 +112,73 @@ exports.googleAuth = async (req, res) => {
         name: user.name,
         email: user.email,
         picture: user.picture,
-        isEmailVerified: user.isEmailVerified,
+        isEmailVerified: user.isEmailVerified || true,
       }
     });
 
   } catch (error) {
     console.error("Google Auth Error:", error);
-    res.status(500).json({ success: false, error: "Server error" });
+    return res.status(500).json({ 
+      success: false, 
+      error: error.message || "Server error during Google authentication" 
+    });
   }
 };
 
 // Register User
-exports.registerUser = async (req, res) => {
+export const registerUser = asyncHandler(async (req, res, next) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return next(new ApiError(400, "All fields are required"));
+  }
+
+  if (!validator.isEmail(email)) {
+    return next(new ApiError(400, "Invalid email format"));
+  }
+
+  // Enforce strong password policy
+  const strong = validator.isStrongPassword(password, {
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
+    returnScore: false,
+  });
+  if (!strong) {
+    return next(
+      new ApiError(
+        400,
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol."
+      )
+    );
+  }
+
+  const normalizedEmail = email.toLowerCase();
+  const existingUser = await User.findOne({ email: normalizedEmail });
+
+  if (existingUser) {
+    return next(new ApiError(409, "User with this email already exists")); // 409 Conflict is more appropriate
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const verificationCode = generateVerificationCode();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+
+  const user = await User.create({
+    name,
+    email: normalizedEmail,
+    password: hashedPassword,
+    emailVerificationCode: verificationCode,
+    emailVerificationExpires: expiresAt,
+    isEmailVerified: false,
+  });
+
+  // Send verification email
   try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ success: false, error: 'All fields are required' });
-    }
-
-    if (!validator.isEmail(email)) {
-      return res.status(400).json({ success: false, error: 'Invalid email format' });
-    }
-
-    // Enforce strong password policy
-    const strong = validator.isStrongPassword(password, {
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1,
-      returnScore: false
-    });
-    if (!strong) {
-      return res.status(400).json({
-        success: false,
-        error: 'Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.'
-      });
-    }
-
-    const normalizedEmail = email.toLowerCase();
-    const existingUser = await User.findOne({ email: normalizedEmail });
-
-    if (existingUser) {
-      return res.status(400).json({ success: false, error: 'User already exists' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Generate verification code for new users
-    const verificationCode = generateVerificationCode();
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-
-    const user = await User.create({
-      name,
-      email: normalizedEmail,
-      password: hashedPassword,
-      emailVerificationCode: verificationCode,
-      emailVerificationExpires: expiresAt,
-      isEmailVerified: false
-    });
-
-    // Send verification email
-    try {
-      const subject = 'Welcome to planora - Verify Your Email';
-      const html = `
+    const subject = "Welcome to planora - Verify Your Email";
+    const html = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -172,7 +206,11 @@ exports.registerUser = async (req, res) => {
               <p>This code will expire in <strong>5 minutes</strong>.</p>
               <p>Enter this code on the verification page to activate your account.</p>
               <div style="text-align: center;">
-                <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?email=${encodeURIComponent(normalizedEmail)}" class="button">Verify Email</a>
+                <a href="${
+                  process.env.FRONTEND_URL || "http://localhost:5173"
+                }/verify-email?email=${encodeURIComponent(
+      normalizedEmail
+    )}" class="button">Verify Email</a>
               </div>
             </div>
             <div class="footer">
@@ -184,33 +222,39 @@ exports.registerUser = async (req, res) => {
         </html>
       `;
 
-      await sendEmail(normalizedEmail, subject, html);
-    } catch (emailError) {
-      console.error('Failed to send verification email:', emailError);
-      // Don't fail registration if email fails
-    }
-
-    setTokenCookie(res, user._id);
-
-    return res.status(201).json({
-      success: true,
-      message: 'Registration successful! Please check your email for verification code.',
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        isEmailVerified: user.isEmailVerified
-      }
-    });
-
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ success: false, error: 'Server Error' });
+    await sendEmail(normalizedEmail, subject, html);
+  } catch (emailError) {
+    console.error("Failed to send verification email:", emailError);
+    // Don't fail registration if email fails
   }
-};
+
+  const createdUser = await User.findById(user._id).select(
+    "-password -emailVerificationCode"
+  );
+
+  if (!createdUser) {
+    return next(
+      new ApiError(500, "User registration failed, please try again.")
+    );
+  }
+
+  // Set the cookie
+  setTokenCookie(res, createdUser._id);
+
+  // Send a standardized success response
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(
+        201,
+        { user: createdUser },
+        "Registration successful! Please check your email for a verification code."
+      )
+    );
+});
 
 // Login User
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -268,7 +312,7 @@ exports.loginUser = async (req, res) => {
 };
 
 // Logout User
-exports.logoutUser = async (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
     return res
       .clearCookie("token", {
@@ -291,7 +335,7 @@ exports.logoutUser = async (req, res) => {
 
 // @route   GET /api/auth/me
 // @access  Private
-exports.getCurrentUser = async (req, res) => {
+export const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user).select("-password"); // exclude password
     if (!user) {

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const elementSchema = new mongoose.Schema({
     id: {
@@ -243,4 +243,5 @@ moodBoardSchema.methods.canView = function (userId) {
     return !!collaborator;
 };
 
-module.exports = mongoose.model('MoodBoard', moodBoardSchema);
+const MoodBoard = mongoose.model('MoodBoard', moodBoardSchema);
+export default MoodBoard;

@@ -124,7 +124,7 @@ The AI-Powered Travel Mood Board is a revolutionary feature that allows users to
 - Validate responsive design
 
 ## Contributing
-This feature is part of the GGSOC2025 project. For contributions:
+This feature is part of the planora project. For contributions:
 1. Follow the existing code style
 2. Add comprehensive tests
 3. Update documentation

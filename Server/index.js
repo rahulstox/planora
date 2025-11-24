@@ -1,31 +1,33 @@
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser'); // <-- NEW
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
-// const xssClean = require('xss-clean');
-const xss = require('xss-clean');
-const morgan = require('morgan');
-require('dotenv').config({ path: './.env' });
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
 
-const connectDB = require('./config/db');
-const securityMiddleware = require('./middleware/securityMiddleware');
+dotenv.config({ path: './.env' });
 
-const authRoutes = require('./routes/authRoutes');
-const emailVerificationRoutes = require('./routes/emailVerificationRoutes');
-const bookingRouter = require('./routes/bookingRoutes');
-const userRoutes = require('./routes/userRoutes');
-const postRoutes = require('./routes/postRoutes')
-const saveRoutes = require('./routes/saveRoutes');
-const tripRoutes = require('./routes/trips.js');
-const reviewsRoutes = require('./routes/reviewRoutes.js');
-const languageRoutes = require('./routes/languageRoutes');
-const moodBoardRoutes = require('./routes/moodBoardRoutes');
-const searchRoutes = require('./routes/search');
-const currencyRoutes = require('./routes/currencyRoutes');
-const musicRoutes = require('./routes/musicRoutes');
-const hotelRoutes = require('./routes/hotelRoutes'); 
+import connectDB from './config/db.js';
+import securityMiddleware from './middleware/securityMiddleware.js';
+
+import authRoutes from './routes/authRoutes.js';
+import emailVerificationRoutes from './routes/emailVerificationRoutes.js';
+import bookingRouter from './routes/bookingRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import postRoutes from './routes/postRoutes.js';
+import saveRoutes from './routes/saveRoutes.js';
+import tripRoutes from './routes/trips.js';
+import reviewsRoutes from './routes/reviewRoutes.js';
+import languageRoutes from './routes/languageRoutes.js';
+import moodBoardRoutes from './routes/moodBoardRoutes.js';
+import searchRoutes from './routes/search.js';
+import currencyRoutes from './routes/currencyRoutes.js';
+import musicRoutes from './routes/musicRoutes.js';
+import hotelRoutes from './routes/hotelRoutes.js';
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -146,16 +148,7 @@ app.use((req, res, next) => {
   res.status(404).json({ message: 'Resource not found' });
 });
 // Error handling middleware global
-app.use((err, req, res, next) => {
-  // Centralized error handler without leaking stack traces in production
-  if (process.env.NODE_ENV !== 'production') {
-    console.error(err);
-  }
-  const status = err.status || 500;
-  const message = status === 500 ? 'Internal Server Error' : err.message;
-  res.status(status).json({ message });
-
-});
+app.use(errorHandler);
 
 // server
 app.listen(PORT, () => {

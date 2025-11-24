@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const detailsSchema = new mongoose.Schema({
   location: String,
@@ -16,4 +16,4 @@ const travelGuideSchema = new mongoose.Schema({
   details: detailsSchema,
 }, { timestamps: true });
 
-module.exports = mongoose.model('TravelGuide', travelGuideSchema); 
+const travelGuide = mongoose.model('TravelGuide', travelGuideSchema);`nexport default travelGuide; 

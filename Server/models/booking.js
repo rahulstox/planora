@@ -1,39 +1,61 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
-const bookingSchema = new mongoose.Schema({
+const bookingSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    bookingType: {
+      type: String,
+      enum: ["hotel", "package", "flight", "train", "bus", "cab"],
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["Pending", "Confirmed", "Cancelled", "Completed"],
+      default: "Pending",
+    },
+    bookingDate: {
+      type: Date,
+      default: Date.now,
+    },
+    startDate: {
+      type: Date,
+      required: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
+    // Flexible field for specific booking details
+    details: {
+      // Common fields
+      destination: String,
+      noOfPeople: Number,
 
-    userId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-    },
-    startingDate : {
-        type : Date,
-        required : [true,"Starting date is required"],
-    },
-    destination : {
-        type : String,
-        required : [true, "Destination is required"],
-    },
-    endingDate : {
-        type : Date,
-        required : [true, "Ending date is required"],
-    },
-    noOfRooms : {
-        type : Number,
-        required : [true, "Selecting number of rooms is required"],
-    },
-    noOfPeople :{
-        type : Number,
-        required : [true, "Please enter the number of people"],
-    },
-    status : {
-        type: String,
-        enum : ["Pending","Cancelled","Completed", "Confirmed"],
-        default : "Pending",
-    }
+      // Hotel-specific fields
+      hotelId: String,
+      hotelName: String,
+      noOfRooms: Number,
 
-},{timestamps: true})
+      // Package-specific fields
+      packageId: { type: mongoose.Schema.Types.ObjectId, ref: "TravelPackage" },
 
-const Booking = mongoose.model("Booking",bookingSchema)
+      // Ticket-specific fields
+      from: String,
+      to: String,
+      cabin: String,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = Booking
+const Booking = mongoose.model("Booking", bookingSchema);
+
+export default Booking;

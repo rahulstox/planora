@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const axios = require('axios');
+import axios from 'axios';
 
 // Get real-time exchange rates
 router.get('/rates/:baseCurrency', async (req, res) => {
@@ -98,4 +98,4 @@ router.get('/currencies', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

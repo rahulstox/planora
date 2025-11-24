@@ -2,7 +2,7 @@
 name: Preferred Template
 about: " Use this format for all types of issues."
 title: ''
-labels: 'gssoc25'
+labels: ''
 assignees: ''
 
 ---

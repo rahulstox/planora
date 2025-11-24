@@ -259,4 +259,4 @@ This feature is part of the planora project and follows the same licensing terms
 
 ---
 
-**Built with ❤️ for the GGSOC2025 project**
+**Built with ❤️ for planora**

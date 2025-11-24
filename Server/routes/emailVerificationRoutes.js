@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const {
+import {
   sendVerificationEmail,
   verifyEmailWithCode,
   resendVerificationCode,
   checkVerificationStatus
-} = require('../controller/emailVerificationController');
-const { verifyJWT } = require('../middleware/auth');
+} from '../controller/emailVerificationController.js';
+import { verifyJWT } from '../middleware/auth.js';
 
 // Send verification email
 router.post('/send-verification', sendVerificationEmail);
@@ -20,4 +20,4 @@ router.post('/resend-code', resendVerificationCode);
 // Check verification status
 router.get('/status', checkVerificationStatus);
 
-module.exports = router;
+export default router;

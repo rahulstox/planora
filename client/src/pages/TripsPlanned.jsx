@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDashboardData } from '../context/DashboardDataContext';
 import { TravelCountdownTimer } from '../components/TravelCountdownTimer';
+import { config } from '../config';
 
 const TripsPlanned = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const TripsPlanned = () => {
 
   const fetchTrips = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/trips', {
+      const res = await fetch(`${config.API_BASE_URL}/trips`, {
         credentials: 'include', // 🔐 Include cookie
       });
       const data = await res.json();
@@ -34,7 +35,7 @@ const TripsPlanned = () => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/trips/${id}`, {
+      const res = await fetch(`${config.API_BASE_URL}/trips/${id}`, {
         method: 'DELETE',
         credentials: 'include', // 🔐 Include cookie
       });

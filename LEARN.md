@@ -1,10 +1,10 @@
-<pre>Note: This repository is created for the contributors of GSSoC'25</pre>
+<pre>Note: Internal learning notes for the Planora team.</pre>
 
 # planora
 
 Welcome to **planora**, a comprehensive travel platform designed to simplify your travel planning experience! With planora, you can seamlessly book travel tickets, hire or rent vehicles, reserve hotels, explore travel guides, and choose complete or customizable travel packages—all in one place. Whether you're a solo adventurer or planning a group getaway, planora has you covered.
 
-This project is proudly part of **GirlScript Summer of Code 2025 (GSSoC)**, and we invite passionate contributors to join us in building an intuitive and user-friendly travel solution.
+This guide explains how we build and maintain planora together as an independent product.
 
 ## Initial Preview
 
@@ -36,7 +36,7 @@ This project is proudly part of **GirlScript Summer of Code 2025 (GSSoC)**, and 
 
 planora is your one-stop platform for all travel-related needs. From booking flights, trains, or buses to renting vehicles, reserving hotels, or exploring curated travel guides, planora offers a seamless and user-friendly experience. Our mission is to make travel planning effortless, affordable, and enjoyable for everyone.
 
-This project is being developed as part of **GSSoC 2025**, providing contributors with an opportunity to collaborate, learn, and build a real-world application.
+The project is actively maintained by the core Planora team along with community contributors.
 
 ---
 
@@ -113,7 +113,7 @@ Ensure you have the following installed:
 
 ## 🤝 Contributing to planora
 
-We welcome **GSSoC 2025** contributors! Follow these guidelines for a smooth collaboration.
+We welcome contributors of all experience levels! Follow these guidelines for a smooth collaboration.
 
 - **Issues**: Pick an unassigned issue from the [Issues section](https://github.com/Adarsh-Chaubey03/planora/issues) or create a new one with a clear description. Wait for admin approval before starting.
 - **Responsive Design**: Ensure all code is responsive across screen sizes using **Tailwind CSS**.
@@ -152,7 +152,7 @@ planora/client/
 
 ## 📜 Code of Conduct
 
-All contributors are expected to adhere to the [GirlScript Code of Conduct](https://github.com/Adarsh-Chaubey03/planora/blob/main/CODE_OF_CONDUCT.md). Be respectful, inclusive, and collaborative in all interactions.
+All contributors are expected to adhere to the [Planora Code of Conduct](./CODE_OF_CONDUCT.md). Be respectful, inclusive, and collaborative in all interactions.
 
 ---
 

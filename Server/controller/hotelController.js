@@ -1,7 +1,7 @@
 // Server/controller/hotelController.js
 
-const axios = require('axios');
-const { asyncHandler } = require('../utils/asyncHandler');
+import axios from 'axios';
+import { asyncHandler } from '../utils/asyncHandler.js';
 
 // Helper function to get the destination ID for a city name
 const getDestinationId = async (cityName) => {
@@ -22,7 +22,7 @@ const getDestinationId = async (cityName) => {
     return null;
 };
 
-exports.searchHotels = asyncHandler(async (req, res) => {
+export const searchHotels = asyncHandler(async (req, res) => {
     const { query } = req.query; // e.g., "Noida"
 
     if (!query) {

@@ -5,20 +5,32 @@ import { toast } from 'react-hot-toast';
 
 const GoogleLoginButton = ({ onSuccess, onError, buttonText = "Continue with Google", className = "" }) => {
   const { googleLogin } = useAuth();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-  // FIX: Context ka googleLogin use karo
+  // Check if Google Client ID is configured
+  if (!googleClientId) {
+    console.warn("Google Client ID is not configured. Please set VITE_GOOGLE_CLIENT_ID in your .env file");
+  }
+
   const handleSuccess = async (credentialResponse) => {
     try {
+      if (!credentialResponse || !credentialResponse.credential) {
+        toast.error("Google authentication failed - no credential received");
+        if (onError) onError("No credential received from Google");
+        return;
+      }
+
       const result = await googleLogin(credentialResponse.credential);
 
       if (result.success) {
-        if (onSuccess) onSuccess(); // redirect ya extra action
+        if (onSuccess) onSuccess();
       } else {
         toast.error(result.error || "Google login failed");
         if (onError) onError(result.error);
       }
     } catch (error) {
       console.error("Google login error:", error);
+      toast.error("An unexpected error occurred during Google login");
       if (onError) onError("Failed to login with Google");
     }
   };

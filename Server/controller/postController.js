@@ -1,144 +1,138 @@
-const { Post } = require('../models/posts');
-//Create a post
+import ForumPost from "../models/forumPost.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
-exports.createPost = async (req, res) => {
-    try {
-        const { title, info, tag, tagColor, senderName, postType } = req.body;
+/**
+ * @description Create a new forum post. User details are taken from the authenticated request.
+ */
+export const createPost = asyncHandler(async (req, res, next) => {
+  // SECURITY: Get user ID and username from `req.user`, which is set by our verifyJWT middleware.
+  // NEVER trust `senderName` or `userId` from the request body.
+  const { _id: userId, name: username } = req.user;
 
-        if (!title || !info || !tag || !tagColor || !senderName) {
-            return res.status(400).json({ message: 'All fields are required' });
-        }
+  const { title, description, category, postType } = req.body;
 
-        const post = await Post.create({
-            title, info, tag, tagColor, senderName, postType, replies: []
-        });
+  // Validate required fields from the body
+  if (!title || !description || !category) {
+    return next(
+      new ApiError(400, "Title, description, and category are required fields.")
+    );
+  }
 
-        res.status(201).json({ message: 'Posted Successfully', post })
+  const post = await ForumPost.create({
+    title,
+    description,
+    userId, // Securely set from req.user
+    username, // Securely set from req.user
+    category, // Renamed from 'tag' to match schema
+    postType,
+    replies: [],
+  });
 
-    }
-    catch (e) {
-        console.log(e);
-        res.status(500).json({ error: e.message });
+  return res
+    .status(201)
+    .json(new ApiResponse(201, post, "Post created successfully"));
+});
 
-    }
-}
-//get All posts
+/**
+ * @description Get all forum posts, sorted by most recent.
+ */
+export const getAllPosts = asyncHandler(async (req, res, next) => {
+  const posts = await ForumPost.find().sort({ createdAt: -1 });
 
-exports.getAllPosts = async (req, res) => {
-    try {
-        const posts = await Post.find().sort({ createdAt: -1 });
-        res.status(200).json(posts)
+  return res
+    .status(200)
+    .json(new ApiResponse(200, posts, "All posts fetched successfully"));
+});
 
-    }
-    catch (e) {
-        console.log(e);
-        res.status(500).json({ error: e.message });
+/**
+ * @description Add a reply to a specific post.
+ */
+export const addReply = asyncHandler(async (req, res, next) => {
+  const { postId } = req.params;
+  const { message } = req.body;
+  // SECURITY: Get user details from the authenticated request.
+  const { _id: userId, name: username } = req.user;
 
-    }
+  if (!message || !message.trim()) {
+    return next(new ApiError(400, "Reply message cannot be empty."));
+  }
 
-}
+  const post = await ForumPost.findById(postId);
 
-//Add reply to a post
+  if (!post) {
+    return next(new ApiError(404, "Post not found with the given ID."));
+  }
 
-exports.addReply = async (req, res) => {
-    const { postId } = req.params;
-    const { senderName, message } = req.body;
+  const reply = { userId, username, message };
+  post.replies.push(reply);
+  await post.save();
 
-    if (!senderName || !message) {
-        return res.status(400).json({ message: 'eigther of message or senderName is not present' })
-    }
-    try {
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: "No post of this id found" });
-        }
-        const reply = { senderName, message, createdAt: new Date() };
-        post.replies.push(reply);
-        await post.save();
-        res.status(200).json({ message: 'Reply added', post });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, post, "Reply added successfully"));
+});
 
-    }
-    catch (e) {
-        console.log(e);
-        res.status(500).json({ error: e.message });
+/**
+ * @description Get all replies for a specific post by its ID.
+ */
+export const getRepliesByPostId = asyncHandler(async (req, res, next) => {
+  const { postId } = req.params;
+  const post = await ForumPost.findById(postId).select("replies"); // Only fetch replies for efficiency
 
-    }
+  if (!post) {
+    return next(new ApiError(404, "Post not found with the given ID."));
+  }
 
-}
+  return res
+    .status(200)
+    .json(new ApiResponse(200, post.replies, "Replies fetched successfully"));
+});
 
-//Get replies By Id
-exports.getRepliesByPostId = async (req, res) => {
-    try {
-        const { postId } = req.params;
-        const post = await Post.findById(postId);
+/**
+ * @description Get posts filtered by type (e.g., question, experience).
+ */
+export const getPostByType = asyncHandler(async (req, res, next) => {
+  const { type } = req.query;
 
-        if (!post) {
-            return res.status(404).json({ message: "No such Id found" })
-        }
-        res.status(200).json({ replies: post.replies });
+  const allowedTypes = ["question", "experience", "review", "tip", "story"];
 
-    } catch (err) {
-        console.log(e);
-        res.status(500).json({ error: e.message });
+  // If a type is provided, it must be one of the allowed types.
+  if (type && !allowedTypes.includes(type)) {
+    return next(new ApiError(400, "Invalid post type specified."));
+  }
 
+  const query = type ? { postType: type } : {};
+  const posts = await ForumPost.find(query).sort({ createdAt: -1 });
 
-    }
-}
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        posts,
+        `Posts of type '${type || "all"}' fetched successfully`
+      )
+    );
+});
 
-//get Post By Type
+/**
+ * @description Get a single post by its ID.
+ */
+export const getPostById = asyncHandler(async (req, res, next) => {
+  const { postId } = req.params;
+  const post = await ForumPost.findById(postId);
 
-exports.getPostByType = async (req, res) => {
-    try {
-        const { type } = req.query;
+  if (!post) {
+    return next(new ApiError(404, "Post not found with the given ID."));
+  }
 
-        // Input validation and sanitization for query parameters
-        if (type && typeof type !== 'string') {
-            return res.status(400).json({
-                message: 'Invalid type parameter'
-            });
-        }
+  // Increment views (optional, but good for tracking)
+  post.views += 1;
+  await post.save();
 
-        // Length validation to prevent injection attacks
-        if (type && type.length > 50) {
-            return res.status(400).json({
-                message: 'Type parameter too long'
-            });
-        }
-
-        // Validate against allowed post types to prevent injection
-        const allowedTypes = ['experience', 'question', 'review', 'tip', 'story'];
-        if (type && !allowedTypes.includes(type)) {
-            return res.status(400).json({
-                message: 'Invalid post type specified'
-            });
-        }
-
-        const query = type ? { postType: type } : {};
-        const posts = await Post.find(query).sort({ createdAt: -1 });
-        res.status(200).json(posts);
-
-    }
-    catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
-
-    }
-
-}
-//Get Post By Id
-
-exports.getPostById = async (req, res) => {
-    try {
-        const { postId } = req.params;
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-        res.status(200).json(post);
-
-
-    }
-    catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
-    }
-
-}
+  return res
+    .status(200)
+    .json(new ApiResponse(200, post, "Post fetched successfully"));
+});

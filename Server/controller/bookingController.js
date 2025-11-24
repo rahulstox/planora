@@ -1,376 +1,206 @@
-const Booking = require("../models/booking");
-const User = require("../models/user");
+import Booking from "../models/booking.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
-exports.addBooking = async (req, res) => {
-    try {
+/**
+ * @description A helper to safely get the user ID from the request object.
+ * Throws a standardized error if the user is not authenticated.
+ * @param {object} req - The Express request object.
+ * @returns {string} The authenticated user's ID.
+ */
+const getUserId = (req) => {
+  // req.user is attached by our `verifyJWT` middleware
+  if (!req.user?._id) {
+    throw new ApiError(401, "User is not authenticated. Please log in.");
+  }
+  return req.user._id;
+};
 
-        const { userId } = req.user;
+/**
+ * @description Create a new booking for the authenticated user.
+ */
+export const addBooking = asyncHandler(async (req, res, next) => {
+  const userId = getUserId(req);
+  const { bookingType, startDate, endDate, totalPrice, details } = req.body;
 
-        const { startingDate, endingDate, noOfRooms, noOfPeople, status, destination } = req.body
+  // Validate required fields
+  if (!bookingType || !startDate || !endDate || !totalPrice || !details) {
+    return next(new ApiError(400, "All booking fields are required"));
+  }
 
-        // check if the startingdate, ending date and noOfRooms is required
+  // Check for overlapping bookings to prevent duplicates
+  const existingBooking = await Booking.findOne({
+    userId,
+    "details.destination": details.destination, // Check within the nested 'details' object
+    status: { $in: ["Pending", "Confirmed"] }, // Only check against active bookings
+    startDate: { $lt: new Date(endDate) },
+    endDate: { $gt: new Date(startDate) },
+  });
 
-        if (!startingDate || !endingDate || !noOfRooms || !noOfPeople || !destination) {
-            throw new Error("All fields are required!")
-        }
+  if (existingBooking) {
+    return next(
+      new ApiError(
+        409,
+        "You have an overlapping booking for this destination during the selected dates."
+      )
+    );
+  }
 
-        if (!userId) {
-            return res
-                .status(400)
-                .json({
-                    message: "User not authenticated",
-                    success: false
-                })
-        }
+  const newBooking = await Booking.create({
+    userId,
+    bookingType,
+    startDate,
+    endDate,
+    totalPrice,
+    details,
+    status: "Confirmed", // Default to Confirmed, can also be passed from body if needed
+  });
 
-        // if userid is present
+  return res
+    .status(201)
+    .json(new ApiResponse(201, newBooking, "Booking created successfully!"));
+});
 
-        // checking if booking is already present for the user
+/**
+ * @description Get all bookings for the authenticated user.
+ */
+export const getAllBookings = asyncHandler(async (req, res, next) => {
+  const userId = getUserId(req);
+  const userBookings = await Booking.find({ userId }).sort({ startDate: 1 }); // Sort by soonest trip
 
-        const isBookingAvailable = await Booking.findOne({ userId, destination })
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, userBookings, "User bookings fetched successfully!")
+    );
+});
 
-        if (existingBooking) {
-            return res
-                .status(400)
-                .json({
-                    message: 'You have already booked this destination.',
-                    success: false
-                })
-        }
+/**
+ * @description Get a single booking by its ID for the authenticated user.
+ */
+export const getBooking = asyncHandler(async (req, res, next) => {
+  const userId = getUserId(req);
+  const { bookingId } = req.params;
 
-        // if the booking is not available for the user
+  const booking = await Booking.findOne({ _id: bookingId, userId });
 
-        const newBooking = new Booking({
-            userId: userId,
-            startingDate: startingDate,
-            endingDate: endingDate,
-            noOfRooms: noOfRooms,
-            noOfPeople: noOfPeople,
-            destination: destination,
-            status: status || "Pending",
-        })
+  if (!booking) {
+    return next(
+      new ApiError(
+        404,
+        "Booking not found or you're not authorized to view it."
+      )
+    );
+  }
 
-        await newBooking.save()
+  return res
+    .status(200)
+    .json(new ApiResponse(200, booking, "Booking fetched successfully!"));
+});
 
-        return res
-            .status(200)
-            .json({
-                message: "Booking is done successfully!!",
-                success: true,
-                data: newBooking
-            })
+/**
+ * @description Edit a booking (e.g., change its status).
+ */
+export const editBooking = asyncHandler(async (req, res, next) => {
+  const userId = getUserId(req);
+  const { bookingId } = req.params;
+  const { status } = req.body; // For now, let's focus on updating status
 
-    }
-    catch (error) {
-        return res
-            .status(500)
-            .json({
-                message: "Service issue in adding booking",
-                success: false
-            })
-    }
-}
+  // You can expand this to include other updatable fields
+  const allowedUpdates = ["Pending", "Confirmed", "Cancelled", "Completed"];
+  if (!status || !allowedUpdates.includes(status)) {
+    return next(
+      new ApiError(400, "A valid status field is required for update.")
+    );
+  }
 
-exports.getAllBooking = async (req, res) => {
-    try {
+  const updatedBooking = await Booking.findOneAndUpdate(
+    { _id: bookingId, userId },
+    { $set: { status } },
+    { new: true } // This option returns the document after the update
+  );
 
-        // check of if user is present for protected route
-        const { userId } = req.user
+  if (!updatedBooking) {
+    return next(
+      new ApiError(
+        404,
+        "Booking not found or you're not authorized to edit it."
+      )
+    );
+  }
 
-        // if userid is not present that means the user is not authenticated
-        if (!userId) {
-            return res
-                .status(400)
-                .json({
-                    message: 'User is not authenticated',
-                    success: false
-                })
-        }
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedBooking, "Booking updated successfully!")
+    );
+});
 
-        // if user is present then fetch the bookings of the user in sorted manner w.r.t to the starting date
-        const userBookings = await Booking.find({ userId }).sort({ startingDate: 1 })
+/**
+ * @description Delete a booking for the authenticated user.
+ */
+export const deleteBooking = asyncHandler(async (req, res, next) => {
+  const userId = getUserId(req);
+  const { bookingId } = req.params;
 
-        if (!userBookings) {
-            return res
-                .status(400)
-                .json({
-                    message: "No booking available for the user",
-                    success: false
-                })
-        }
+  const deletedBooking = await Booking.findOneAndDelete({
+    _id: bookingId,
+    userId,
+  });
 
-        return res
-            .status(200)
-            .json({
-                message: "All bookings are fetched!",
-                success: true,
-                data: userBookings
-            })
+  if (!deletedBooking) {
+    return next(
+      new ApiError(
+        404,
+        "Booking not found or you're not authorized to delete it."
+      )
+    );
+  }
 
-    }
-    catch (error) {
-        return res
-            .status(500)
-            .json({
-                message: "Unable to fetch all the bookings from user",
-                success: false
-            })
-    }
-}
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { deletedId: bookingId },
+        "Booking deleted successfully!"
+      )
+    );
+});
 
-exports.getBooking = async (req, res) => {
-    try {
-        const { bookingId } = req.params
-        const { userId } = req.user
+/**
+ * @description Rebook a previously cancelled or completed trip.
+ */
+export const rebookBooking = asyncHandler(async (req, res, next) => {
+  const userId = getUserId(req);
+  const { bookingId } = req.params;
 
-        // check if user is authorised
-        if (!userId) {
-            return res
-                .status(400)
-                .json({
-                    message: "User is not authorised",
-                    success: false
-                })
-        }
+  const originalBooking = await Booking.findOne({ _id: bookingId, userId });
 
-        // checking if booking id is provided or not
-        if (!bookingId) {
-            return res
-                .status(400)
-                .json({
-                    message: "Booking id is not provided",
-                    success: false
-                })
-        }
+  if (!originalBooking) {
+    return next(
+      new ApiError(
+        404,
+        "Original booking not found or it does not belong to you."
+      )
+    );
+  }
 
-        const fetchedBooking = await Booking.findById(bookingId);
+  // Create a new booking based on the old one
+  const rebooked = await Booking.create({
+    userId: userId,
+    bookingType: originalBooking.bookingType,
+    startDate: originalBooking.startDate, // Consider prompting user for new dates
+    endDate: originalBooking.endDate,
+    totalPrice: originalBooking.totalPrice, // Consider re-calculating price
+    details: originalBooking.details,
+    status: "Confirmed", // New booking is confirmed
+  });
 
-        if (!fetchedBooking) {
-            return res
-                .status(400)
-                .json({
-                    message: 'Booking is unavailable'
-                })
-        }
-
-        return res
-            .status(200)
-            .json({
-                message: "Desired booking fetched successfully!",
-                data: fetchedBooking,
-                success: true
-            })
-
-    }
-    catch (error) {
-        return res
-            .status(500)
-            .json({
-                message: "Unable to fetch the desired booking",
-                success: false
-            })
-    }
-}
-
-/* LEFT AND REMAINIG TO CHECK */
-exports.editBooking = async (req, res) => {
-    try {
-
-        const { bookingId } = req.params
-
-        const { userId } = req.user
-
-        if (!userId) {
-            return res
-                .status(400)
-                .json({
-                    message: "Unauthorized access",
-                    success: false
-                })
-        }
-
-        // check if booking id is present
-        if (!bookingId) {
-            return res
-                .status(400)
-                .json({
-                    message: "Booking id is required",
-                    success: false
-                })
-        }
-
-        // now edit
-        const allowedField = ["startingDate", "endingDate", "noOfRooms", "noOfPeople", "status", "destination"]
-
-        // store the fields to be uupdated
-        const updateFields = {};
-
-        for (let field of allowedField) {
-            if (req.body[field] != undefined) {
-                updateFields[field] = req.body[field]
-            }
-        }
-
-        // now checking if any update available
-        if (Object.keys(updateFields).length == 0) {
-            return res
-                .status(400)
-                .json({
-                    message: "No valid field provided for update",
-                    success: false
-                })
-        }
-
-        // update the fields now
-        const updatedBooking = await Booking.findOneAndUpdate(
-            { _id: bookingId, userId },
-            updateFields,
-            { new: true }
-        )
-
-        if (!updatedBooking) {
-            return res
-                .status(400)
-                .json({
-                    message: "Booking is not found or doesnot belong to the user",
-                    success: false
-                })
-        }
-
-        // updated successfully!
-        return res
-            .status(200)
-            .json({
-                message: "Booking updated successfully!!",
-                success: true,
-                data: updatedBooking
-            })
-    }
-    catch (error) {
-        return res
-            .status(500)
-            .json({
-                message: "Error editing booking",
-                success: false
-            })
-    }
-
-}
-
-exports.deleteBooking = async (req, res) => {
-    try {
-        // get the userid
-        const userId = req.user
-
-        if (!userId) {
-            return res
-                .status(400)
-                .json({
-                    message: "User is not authorized",
-                    success: false
-                })
-        }
-
-        // get the booking id
-        const { bookingId } = req.params
-
-        if (!bookingId) {
-            return res
-                .status(400)
-                .json({
-                    message: "Booking id is not available",
-                    success: false
-                })
-        }
-
-        const booking = await Booking.findById(bookingId)
-
-        if (!booking) {
-            return res
-                .status(400)
-                .json({
-                    message: "Booking not found",
-                    success: false
-                });
-        }
-
-        if (booking.userId.toString() != userId) {
-            return res
-                .status(400)
-                .json({
-                    message: "Unauthorized to delete this booking",
-                    success: false
-                })
-        }
-
-        await booking.deleteOne()
-
-        return res
-            .status(200)
-            .json({
-                message: "Booking deleted successfully!!",
-                success: true,
-            })
-    }
-    catch (error) {
-        return res
-            .status(500)
-            .json({
-                message: "Error deleting the message",
-                success: false
-            })
-    }
-}
-
-exports.rebookBooking = async (req, res) => {
-    try {
-        const { bookingId } = req.params;
-        const { userId } = req.user;
-
-        if (!userId) {
-            return res.status(400).json({
-                message: "User is not authorized",
-                success: false
-            });
-        }
-
-        if (!bookingId) {
-            return res.status(400).json({
-                message: "Booking ID is required",
-                success: false
-            });
-        }
-
-        const originalBooking = await Booking.findById(bookingId);
-
-        if (!originalBooking || originalBooking.userId.toString() !== userId) {
-            return res.status(400).json({
-                message: "Booking not found or does not belong to the user",
-                success: false
-            });
-        }
-
-        const newBooking = new Booking({
-            userId: userId,
-            startingDate: originalBooking.startingDate,
-            endingDate: originalBooking.endingDate,
-            noOfRooms: originalBooking.noOfRooms,
-            noOfPeople: originalBooking.noOfPeople,
-            destination: originalBooking.destination,
-            status: "Pending"
-        });
-
-        await newBooking.save();
-
-        return res.status(200).json({
-            message: "Rebooking successful! Please verify details and complete the payment.",
-            success: true,
-            data: newBooking
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Error rebooking the trip",
-            success: false
-        });
-    }
-}
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(201, rebooked, "Trip has been rebooked successfully!")
+    );
+});

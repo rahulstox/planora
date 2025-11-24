@@ -15,6 +15,7 @@ import { useTheme } from "../context/ThemeContext";
 import axios from "axios";
 import NewQuestionModal from "../components/NewQuestionModal";
 import { useAuth } from "@/context/AuthContext";
+import { config } from "../config";
 
 const initialForumTopics = [
   {
@@ -191,40 +192,32 @@ export default function Forum() {
 
 
   // Define the data fetching logic in its own function
-const fetchForumTopics = async () => {
-  try {
-// Add error handling for network issues
-const fetchForumTopics = async () => {
-  try {
-    const res = await axios.get("http://localhost:5000/api/post/allPosts", {
-      timeout: 10000, // 10 second timeout
-    });
-    // ... rest of your code
-  } catch (err) {
-    console.error("Failed to load forum topics:", err);
-    if (err.code === 'ECONNREFUSED' || err.message.includes('Network Error')) {
-      toast.error("Unable to connect to server. Please check if the backend is running on port 5000.");
-    } else {
-      toast.error("Failed to fetch forum topics");
+  const fetchForumTopics = async () => {
+    try {
+      const res = await axios.get(`${config.API_BASE_URL}/post/allPosts`, {
+        timeout: 10000, // 10 second timeout
+      });
+      const transformed = res.data.map((post) => ({
+        id: post._id,
+        title: post.title,
+        description: post.info,
+        category: post.tag?.toLowerCase() || "general",
+        author: post.senderName,
+        createdAt: post.createdAt,
+        replies: post.replies || [],
+        views: post.views || 0,
+        trending: post.trending || false,
+      }));
+      setForumTopics(transformed);
+    } catch (err) {
+      console.error("Failed to load forum topics:", err);
+      if (err.code === 'ECONNREFUSED' || err.message?.includes('Network Error')) {
+        toast.error("Unable to connect to server. Please check if the backend is running on port 5000.");
+      } else {
+        toast.error("Failed to fetch forum topics");
+      }
     }
-  }
-};    const transformed = res.data.map((post) => ({
-      id: post._id,
-      title: post.title,
-      description: post.info,
-      category: post.tag?.toLowerCase() || "general",
-      author: post.senderName,
-      createdAt: post.createdAt,
-      replies: post.replies || [],
-      views: post.views || 0,
-      trending: post.trending || false,
-    }));
-    setForumTopics(transformed);
-  } catch (err) {
-    console.error("Failed to load forum topics:", err);
-    toast.error("Failed to fetch forum topics");
-  }
-};
+  };
 
   useEffect(() => {
      fetchForumTopics();
@@ -344,7 +337,7 @@ const fetchForumTopics = async () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/post/createPost",
+        `${config.API_BASE_URL}/post/createPost`,
         {
           method: "POST",
           headers: {
@@ -503,7 +496,7 @@ const fetchForumTopics = async () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/post/reply/${replyPostId}`,
+        `${config.API_BASE_URL}/post/reply/${replyPostId}`,
         {
           method: "POST",
           headers: {

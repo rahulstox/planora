@@ -1,6 +1,6 @@
-const Place = require('../models/place'); // Make sure you have this model
+import Place from '../models/place.js'; // Make sure you have this model
 
-exports.searchPlaces = async (req, res) => {
+export const searchPlaces = async (req, res) => {
   try {
     const { location, category } = req.query;
 

@@ -1,10 +1,10 @@
-# ✨ Contributor Covenant Code of Conduct — GSSoC ✨
+# ✨ Planora Contributor Covenant Code of Conduct ✨
 
 ---
 
 ## 🌟 Our Pledge
 
-We, as members, contributors, and leaders of **GirlScript Summer of Code (GSSoC)**, pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+We, as members, contributors, and leaders of the **Planora community**, pledge to make participation in our ecosystem a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
 
@@ -32,7 +32,7 @@ Examples of unacceptable behavior include:
 
 ## 👨‍⚖️ Enforcement Responsibilities
 
-**GSSoC Program Organizers, Project Admins, and Moderators** are responsible for clarifying and enforcing our standards of acceptable behavior. They may take appropriate and fair corrective action in response to any behavior they deem inappropriate, threatening, offensive, or harmful.
+**Planora maintainers, project admins, and moderators** are responsible for clarifying and enforcing our standards of acceptable behavior. They may take appropriate and fair corrective action in response to any behavior they deem inappropriate, threatening, offensive, or harmful.
 
 They have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned with this Code of Conduct and will provide reasons for moderation when appropriate.
 
@@ -40,7 +40,7 @@ They have the right and responsibility to remove, edit, or reject comments, comm
 
 ## 🌐 Scope
 
-This Code of Conduct applies across all GSSoC community spaces — including GitHub repositories, communication platforms (like Discord), events, and social media — as well as any interactions where individuals are officially representing GSSoC in public or private spaces.
+This Code of Conduct applies across all Planora community spaces — including GitHub repositories, communication platforms (like Discord), events, and social media — as well as any interactions where individuals are officially representing Planora in public or private spaces.
 
 ---
 
@@ -52,9 +52,9 @@ All contributions must align with this Code of Conduct. PRs containing inappropr
 
 ## 🛡️ Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior can be reported confidentially to the GSSoC team at:
+Instances of abusive, harassing, or otherwise unacceptable behavior can be reported confidentially to the Planora team at:
 
-📧 **gssoc@girlscript.tech**
+📧 **support@planora.app**
 
 All complaints will be reviewed and investigated promptly and fairly. The team is committed to protecting the privacy and safety of the reporter.
 
@@ -62,7 +62,7 @@ All complaints will be reviewed and investigated promptly and fairly. The team i
 
 ## 📖 Enforcement Guidelines
 
-GSSoC community leaders will follow these guidelines when determining the consequences for violations:
+Planora community leaders will follow these guidelines when determining the consequences for violations:
 
 ### 1. ✏️ Correction
 
@@ -106,6 +106,6 @@ Enforcement guidelines inspired by [Mozilla’s code of conduct enforcement ladd
 
 ## 🌟 Conclusion
 
-By committing to this Code of Conduct, we build a welcoming, inclusive, and respectful space for everyone involved in GSSoC. Let's ensure our community reflects the values we stand for — support, growth, and empowerment through open source.
+By committing to this Code of Conduct, we build a welcoming, inclusive, and respectful space for everyone involved in Planora. Let's ensure our community reflects the values we stand for — support, growth, and empowerment through open source.
 
-Together, let’s make GSSoC a safe and collaborative experience for all 💫
+Together, let’s make Planora a safe and collaborative experience for all 💫

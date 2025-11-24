@@ -1,10 +1,10 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_jwt_secret_for_development_only_change_in_production';
 
 console.log('Auth middleware: JWT_SECRET is', JWT_SECRET ? 'set' : 'using fallback');
 
-exports.verifyJWT = async (req, res, next) => {
+export const verifyJWT = async (req, res, next) => {
   try {
     console.log('Auth middleware: verifyJWT called for path:', req.path);
 
@@ -59,4 +59,4 @@ exports.verifyJWT = async (req, res, next) => {
 };
 
 // Export protect middleware (alias for verifyJWT)
-exports.protect = exports.verifyJWT;
+export const protect = verifyJWT;

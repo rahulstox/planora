@@ -3,10 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import {
-  MapPin,
   Users,
-  Star,
-  Heart,
   Mail,
   Phone,
   Calendar,
@@ -151,9 +148,8 @@ function About() {
     },
     {
       year: "2025",
-      title: "GSSoC Partnership",
-      description:
-        "Joined GirlScript Summer of Code to build with the community",
+      title: "Community Launch",
+      description: "Opened source to collaborate with independent builders",
       icon: <Users className="w-6 h-6" />,
     },
     {
@@ -170,51 +166,6 @@ function About() {
     },
   ];
 
-  const teamMembers = [
-    {
-      name: "Development Team",
-      role: "Full Stack Developers",
-      description: "Building the core platform with modern technologies",
-      avatar: "👥",
-    },
-    {
-      name: "Design Team",
-      role: "UI/UX Designers",
-      description: "Creating intuitive and beautiful user experiences",
-      avatar: "🎨",
-    },
-    {
-      name: "Community Team",
-      role: "Open Source Contributors",
-      description: "Contributing features and improvements through GSSoC",
-      avatar: "🤝",
-    },
-    {
-      name: "Product Team",
-      role: "Product Managers",
-      description: "Defining roadmap and ensuring user-centric features",
-      avatar: "📋",
-    },
-  ];
-
-  const achievements = [
-    {
-      number: "10K+",
-      label: "Active Users",
-      icon: <Users className="w-8 h-8" />,
-    },
-    {
-      number: "50+",
-      label: "Destinations",
-      icon: <MapPin className="w-8 h-8" />,
-    },
-    {
-      number: "100+",
-      label: "Contributors",
-      icon: <Heart className="w-8 h-8" />,
-    },
-    { number: "4.8", label: "User Rating", icon: <Star className="w-8 h-8" /> },
-  ];
 
   return (
     <div
@@ -492,141 +443,6 @@ function About() {
         </div>
       </section>
 
-      {/* Team Members Section */}
-      <section
-        id="team"
-        data-animate
-        className={`py-20 px-4 sm:px-6 lg:px-8 transition-all duration-1000 ${
-          isVisible.team
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-10"
-        }`}
-      >
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            whileInView={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2
-              className={`text-3xl sm:text-4xl font-bold mb-6 transition-all duration-300 ${
-                isDarkMode ? "text-white" : "text-gray-900"
-              }`}
-            >
-              Our <span className="text-pink-400">Team</span>
-            </h2>
-            <p
-              className={`text-xl max-w-3xl mx-auto leading-relaxed transition-all duration-300 ${
-                isDarkMode ? "text-gray-300" : "text-gray-700"
-              }`}
-            >
-              A diverse group of passionate individuals working together to
-              revolutionize travel planning
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={index}
-                whileInView={{ opacity: 1, y: 0 }}
-                initial={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
-                className={`rounded-lg p-6 text-center border transition-all duration-300 ${
-                  isDarkMode
-                    ? "bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 hover:border-pink-400"
-                    : "bg-gradient-to-br from-white to-pink-200 border-pink-600 hover:border-pink-300 shadow-xl shadow-gray-600"
-                }`}
-              >
-                <div className="text-6xl mb-4">{member.avatar}</div>
-                <h3
-                  className={`text-xl font-bold mb-2 transition-all duration-300 ${
-                    isDarkMode ? "text-white" : "text-gray-900"
-                  }`}
-                >
-                  {member.name}
-                </h3>
-                <p className="text-pink-400 font-semibold mb-3">
-                  {member.role}
-                </p>
-                <p
-                  className={`text-sm leading-relaxed transition-all duration-300 ${
-                    isDarkMode ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  {member.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Achievements Section */}
-      <section
-        id="achievements"
-        data-animate
-        className={`py-20 px-4 sm:px-6 lg:px-8 transition-all duration-1000 ${
-          isVisible.achievements
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-10"
-        }`}
-      >
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            whileInView={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2
-              className={`text-3xl sm:text-4xl font-bold mb-6 transition-all duration-300 ${
-                isDarkMode ? "text-white" : "text-gray-900"
-              }`}
-            >
-              Our <span className="text-pink-400">Impact</span>
-            </h2>
-            <p
-              className={`text-xl max-w-3xl mx-auto leading-relaxed transition-all duration-300 ${
-                isDarkMode ? "text-gray-300" : "text-gray-700"
-              }`}
-            >
-              Numbers that reflect our growing community and commitment to
-              excellence
-            </p>
-          </motion.div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {achievements.map((achievement, index) => (
-              <motion.div
-                key={index}
-                whileInView={{ opacity: 1, scale: 1 }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg p-8 text-center text-white transform transition-all duration-300"
-              >
-                <div className="flex justify-center mb-4 text-white">
-                  {achievement.icon}
-                </div>
-                <div className="text-3xl font-bold mb-2">
-                  {achievement.number}
-                </div>
-                <div className="text-pink-100 font-semibold">
-                  {achievement.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Contact Info Section */}
       <section
         id="contact"
@@ -813,65 +629,6 @@ function About() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* GSSoC Section */}
-      <section
-        id="gssoc"
-        data-animate
-        className={`py-20 px-4 sm:px-6 lg:px-8 ${
-          isDarkMode ? "text-pink-300" : "text-black"
-        } bg-opacity-50 transition-all duration-1000 ${
-          isVisible.gssoc
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-10"
-        }`}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h2
-            whileInView={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className={`text-3xl sm:text-4xl font-bold mb-8 ${
-              isDarkMode ? "text-white" : "text-black"
-            }`}
-          >
-            Part of{" "}
-            <span className="text-pink-400">
-              GirlScript Summer of Code 2025
-            </span>
-          </motion.h2>
-          <motion.div
-            whileInView={{ opacity: 1, scale: 1 }}
-            initial={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="rounded-lg p-8 border border-pink-400"
-          >
-            <p
-              className={`text-lg mb-6 leading-relaxed ${
-                isDarkMode ? "text-gray-200" : "text-gray-800"
-              }`}
-            >
-              planora is proudly part of GirlScript Summer of Code 2025 (GSSoC),
-              providing contributors with an opportunity to collaborate on a
-              real-world application, honing their skills and building a
-              meaningful product.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <div className="bg-pink-500 text-white px-6 py-2 rounded-full font-semibold transform hover:scale-105 transition-transform duration-200">
-                Open Source
-              </div>
-              <div className="bg-purple-500 text-white px-6 py-2 rounded-full font-semibold transform hover:scale-105 transition-transform duration-200">
-                Community Driven
-              </div>
-              <div className="bg-blue-500 text-white px-6 py-2 rounded-full font-semibold transform hover:scale-105 transition-transform duration-200">
-                Learning Focused
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 

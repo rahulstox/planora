@@ -1,5 +1,5 @@
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
 
 // Comprehensive input validation and sanitization middleware
 const securityMiddleware = {
@@ -114,4 +114,4 @@ const securityMiddleware = {
     }
 };
 
-module.exports = securityMiddleware;
+export default securityMiddleware;

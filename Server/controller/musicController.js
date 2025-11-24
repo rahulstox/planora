@@ -1,5 +1,5 @@
-const Music = require('../models/music');
-const { asyncHandler } = require('../utils/asyncHandler');
+import Music from '../models/music.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 
 // Get all music with optional type filter
 const getAllMusic = asyncHandler(async (req, res) => {
@@ -290,7 +290,7 @@ const getMusicStats = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = {
+export {
   getAllMusic,
   getMusicById,
   uploadMusic,

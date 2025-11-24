@@ -25,7 +25,7 @@ const blogs = [
     title: "Ultimate Checklist Before You Travel ✅",
     summary:
       "Don't forget these important things before your next trip. We’ve got your back with this handy checklist.",
-    author: "GSSoC Team",
+    author: "Planora Editorial",
     date: "July 10, 2025",
     tags: ["Checklist", "Packing", "Essentials"],
   },

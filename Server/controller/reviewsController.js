@@ -1,4 +1,4 @@
-const Comment = require("../models/reviews");
+import Comment from "../models/reviews.js";
 
 const addComment = async (req, res) => {
   try {
@@ -30,7 +30,7 @@ const getAllComments = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   addComment,
   getAllComments,
 }

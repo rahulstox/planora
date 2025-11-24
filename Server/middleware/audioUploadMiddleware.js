@@ -1,5 +1,5 @@
-const multer = require('multer');
-const path = require('path');
+import multer from 'multer';
+import path from 'path';
 
 const storage = multer.diskStorage({
   destination: '../client/public/uploads/audio/',
@@ -42,4 +42,4 @@ const audioUpload = multer({
   }
 });
 
-module.exports = audioUpload;
+export default audioUpload;

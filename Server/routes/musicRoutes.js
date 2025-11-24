@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { protect } = require('../middleware/auth');
-const audioUpload = require('../middleware/audioUploadMiddleware');
-const {
+import { protect } from '../middleware/auth.js';
+import audioUpload from '../middleware/audioUploadMiddleware.js';
+import {
   getAllMusic,
   getMusicById,
   uploadMusic,
@@ -11,7 +11,7 @@ const {
   toggleLike,
   incrementPlayCount,
   getMusicStats
-} = require('../controller/musicController');
+} from '../controller/musicController.js';
 
 // Public routes (no authentication required)
 router.get('/', getAllMusic);
@@ -25,4 +25,4 @@ router.put('/:id', protect, updateMusic);
 router.delete('/:id', protect, deleteMusic);
 router.post('/:id/like', protect, toggleLike);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const itinerarySchema = new mongoose.Schema({
   day: Number,
@@ -36,4 +36,4 @@ const travelPackageSchema = new mongoose.Schema({
   faqs: [faqSchema],
 }, { timestamps: true });
 
-module.exports = mongoose.model('TravelPackage', travelPackageSchema); 
+const travelPackage = mongoose.model('TravelPackage', travelPackageSchema);`nexport default travelPackage; 

@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { verifyJWT } = require('../middleware/auth');
-const {
+import { verifyJWT } from '../middleware/auth.js';
+import {
     createMoodBoard,
     getUserMoodBoards,
     getMoodBoardById,
@@ -12,7 +12,7 @@ const {
     removeCollaborator,
     addMessage,
     getPublicMoodBoards
-} = require('../controller/moodBoardController');
+} from '../controller/moodBoardController.js';
 
 // Public routes
 router.get('/public', getPublicMoodBoards);
@@ -35,4 +35,4 @@ router.delete('/:id/collaborators/:collaboratorId', removeCollaborator);
 // Messaging routes
 router.post('/:id/messages', addMessage);
 
-module.exports = router;
+export default router;

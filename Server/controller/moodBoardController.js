@@ -1,5 +1,5 @@
-const MoodBoard = require('../models/moodBoard');
-const User = require('../models/user');
+import MoodBoard from '../models/moodBoard.js';
+import User from '../models/user.js';
 
 // Create a new mood board
 const createMoodBoard = async (req, res) => {
@@ -505,7 +505,7 @@ const getPublicMoodBoards = async (req, res) => {
     }
 };
 
-module.exports = {
+export {
     createMoodBoard,
     getUserMoodBoards,
     getMoodBoardById,

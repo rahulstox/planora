@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const User = require('../models/user');
-const { verifyJWT } = require('../middleware/auth');
+import User from '../models/user.js';
+import { verifyJWT } from '../middleware/auth.js';
 
 // Get user's language preference
 router.get('/preference', verifyJWT, async (req, res) => {
@@ -57,4 +57,4 @@ router.get('/supported', (req, res) => {
   res.json(supportedLanguages);
 });
 
-module.exports = router;
+export default router;

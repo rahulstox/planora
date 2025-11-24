@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const musicSchema = new mongoose.Schema({
   title: {
@@ -67,4 +67,5 @@ musicSchema.index({ type: 1, addedDate: -1 });
 musicSchema.index({ addedBy: 1 });
 musicSchema.index({ title: 'text', artist: 'text' });
 
-module.exports = mongoose.model('Music', musicSchema);
+const Music = mongoose.model('Music', musicSchema);
+export default Music;

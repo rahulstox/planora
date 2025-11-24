@@ -1,8 +1,8 @@
-const Trip = require('../models/trips.js');
-const User = require('../models/user');
+import Trip from '../models/trips.js';
+import User from '../models/user.js';
 
 // POST /api/trips - Save a trip
-exports.createTrip = async (req, res) => {
+export const createTrip = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -25,7 +25,7 @@ exports.createTrip = async (req, res) => {
   }
 };
 // GET /api/trips - Get trips only for logged-in user
-exports.getAllTrips = async (req, res) => {
+export const getAllTrips = async (req, res) => {
   try {
     const userId = req.user._id; // ✅ Logged-in user
     const trips = await Trip.find({ userId }).sort({ _id: -1 }); // ✅ Only this user's trips
@@ -37,7 +37,7 @@ exports.getAllTrips = async (req, res) => {
 };
 
 // DELETE /api/trips/:id - Delete only if user owns the trip
-exports.deleteTrip = async (req, res) => {
+export const deleteTrip = async (req, res) => {
   try {
     const userId = req.user._id;
     const tripId = req.params.id;

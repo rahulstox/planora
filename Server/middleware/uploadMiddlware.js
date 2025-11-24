@@ -1,5 +1,5 @@
-const multer = require('multer');
-const path = require('path');
+import multer from 'multer';
+import path from 'path';
 
 const storage = multer.diskStorage({
   destination: './uploads/',
@@ -24,4 +24,4 @@ const upload = multer({
   fileFilter,
   limits: { fileSize: 2 * 1024 * 1024 } // 2MB
 });
-module.exports = upload;
+export default upload;

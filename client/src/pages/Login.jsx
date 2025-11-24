@@ -34,7 +34,7 @@ const Login = () => {
       setError(t("login.errors.emptyEmail"));
       return;
     }
-    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError(t("login.errors.invalidEmail"));
       return;

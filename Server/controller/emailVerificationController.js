@@ -1,6 +1,6 @@
-const User = require('../models/user');
-const { sendEmail } = require('../utils/emailService');
-const crypto = require('crypto');
+import User from '../models/user.js';
+import { sendEmail } from '../utils/emailService.js';
+import crypto from 'crypto';
 
 // Generate 6-digit verification code
 const generateVerificationCode = () => {
@@ -268,7 +268,7 @@ const checkVerificationStatus = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   sendVerificationEmail,
   verifyEmailWithCode,
   resendVerificationCode,

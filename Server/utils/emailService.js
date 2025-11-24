@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 // Create reusable transporter object using the default SMTP transport
 const createTransporter = () => {
@@ -222,7 +222,7 @@ const testEmailConfiguration = async () => {
   }
 };
 
-module.exports = {
+export {
   sendEmail,
   sendVerificationEmail,
   testEmailConfiguration
